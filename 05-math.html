@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>પવિત્ર અંકોની ગણિત ક્વિઝ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans Gujarati', 'Roboto', sans-serif; /* Roboto as fallback for English */
+            background-color: #FFF8E1; 
+            color: #4E342E; 
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; 
+            min-height: 100vh;
+            padding: 16px;
+            line-height: 1.6;
+        }
+        .container {
+            background-color: #FFFFFF;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px; 
+            text-align: center;
+        }
+        h1 {
+            color: #D84315; 
+            font-weight: 700;
+            font-size: 1.75rem; 
+            margin-bottom: 16px;
+        }
+        h2 {
+            color: #FF8F00; 
+            font-weight: 700;
+            font-size: 1.25rem; 
+            margin-top: 16px;
+            margin-bottom: 8px;
+        }
+        h3 {
+            color: #5D4037; 
+            font-weight: 500;
+            font-size: 1.1rem; 
+            margin-bottom: 8px;
+        }
+        .language-switcher {
+            margin-bottom: 16px;
+        }
+        .lang-button {
+            background-color: #795548; /* Brown */
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin: 0 5px;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+        .lang-button:hover {
+            background-color: #5D4037; /* Darker Brown */
+        }
+        .lang-button.active {
+            background-color: #D84315; /* Deep Orange for active */
+            font-weight: bold;
+        }
+
+        .persistent-reference-table, .instructions {
+            background-color: #FFFDE7; 
+            border: 1px solid #FFECB3; 
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            text-align: left;
+        }
+        .persistent-reference-table h3 {
+            margin-top: 0;
+            color: #BF360C;
+        }
+        .persistent-reference-table p {
+            margin-bottom: 4px;
+            font-size: 0.95rem; 
+        }
+        .persistent-reference-table p strong {
+            color: #BF360C; 
+        }
+        .instructions ol {
+            padding-left: 20px;
+            list-style-type: decimal;
+        }
+        .instructions li {
+            margin-bottom: 6px;
+            font-size: 0.95rem; 
+        }
+        button, .option-button {
+            background-color: #FF9800; 
+            color: white;
+            font-weight: 500;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            font-size: 1rem; 
+            margin: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            min-width: 120px; 
+        }
+        button:hover, .option-button:hover:not(:disabled) {
+            background-color: #F57C00; 
+            transform: translateY(-1px);
+        }
+        button:disabled, .option-button:disabled {
+            background-color: #E0E0E0; 
+            color: #757575;
+            cursor: not-allowed;
+            transform: translateY(0);
+            box-shadow: none;
+        }
+        #toggleInstructions {
+            background-color: #4CAF50; 
+            margin-bottom: 16px;
+        }
+        #toggleInstructions:hover {
+            background-color: #388E3C; 
+        }
+        #questionArea p, #feedbackArea p, #scoreArea p {
+            font-size: 1.1rem; 
+            margin-bottom: 10px;
+        }
+        #questionText {
+            font-weight: 500;
+            color: #3E2723; 
+            font-size: 1.2rem; 
+            margin-bottom: 16px;
+            min-height: 50px; /* To prevent layout jump on text change */
+        }
+        #optionsContainer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        .option-button.correct-selected {
+            background-color: #4CAF50; 
+            border: 2px solid #388E3C;
+        }
+        .option-button.incorrect-selected {
+            background-color: #F44336; 
+            border: 2px solid #D32F2F;
+        }
+        .feedback-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .feedback-text.correct {
+            color: #2E7D32; 
+        }
+        .feedback-text.incorrect {
+            color: #C62828; 
+        }
+        .calculation-steps {
+            text-align: left;
+            background-color: #FAFAFA; 
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #EEEEEE;
+            margin-top: 10px;
+            font-size: 0.95rem;
+            color: #5D4037;
+        }
+        .calculation-steps p {
+            margin-bottom: 5px;
+        }
+        .calculation-steps strong { 
+            color: #BF360C;
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 8px; }
+            .container { padding: 15px; }
+            h1 { font-size: 1.5rem; } 
+            h2 { font-size: 1.15rem; } 
+            button, .option-button { font-size: 0.8rem; padding: 8px 10px; margin: 3px; min-width: 90px;}
+            .lang-button { font-size: 0.8rem; padding: 6px 10px;}
+            #questionArea p, #feedbackArea p, #scoreArea p { font-size: 1rem; }
+            #questionText { font-size: 1.05rem; min-height: 40px; }
+            .persistent-reference-table p, .instructions li { font-size: 0.85rem; }
+            .calculation-steps { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="language-switcher">
+            <button id="langGuButton" class="lang-button active">ગુજરાતી</button>
+            <button id="langEnButton" class="lang-button">English</button>
+        </div>
+
+        <h1 id="quizTitle"></h1>
+
+        <div class="persistent-reference-table">
+            <h3 id="referenceTitle"></h3>
+            <p><strong id="refArihant"></strong> (<span id="refArihantColor"></span>): ૧૨</p>
+            <p><strong id="refSiddha"></strong> (<span id="refSiddhaColor"></span>): ૮</p>
+            <p><strong id="refAcharya"></strong> (<span id="refAcharyaColor"></span>): ૩૬</p>
+            <p><strong id="refUpadhyay"></strong> (<span id="refUpadhyayColor"></span>): ૨૫</p>
+            <p><strong id="refSadhu"></strong> (<span id="refSadhuColor"></span>): ૨૭</p>
+        </div>
+
+        <button id="toggleInstructions"></button>
+        
+        <div id="instructionsSection" class="instructions" style="display: none;">
+            <h2 id="instructionsTitle"></h2>
+            <ol>
+                <li id="instruction1"></li>
+                <li id="instruction2"></li>
+                <li id="instruction3"></li>
+                <li id="instruction4"></li>
+                <li id="instruction5"></li>
+                <li id="instruction6"></li>
+            </ol>
+        </div>
+
+        <div id="quizArea">
+            <p id="questionNumber" class="font-medium text-lg"></p>
+            <p id="questionText" class="my-3"></p>
+            <div id="optionsContainer"></div>
+        </div>
+
+        <div id="feedbackArea" class="my-3"></div>
+        <div id="scoreArea" class="font-semibold text-xl my-3"><span id="scoreLabel"></span> ૦</div>
+
+        <button id="nextQuestionButton" style="display:none;"></button>
+        <button id="restartButton" style="display:none;"></button>
+    </div>
+
+    <script>
+        // --- Translation Data ---
+        const translations = {
+            gu: {
+                quizTitle: "પવિત્ર અંકોની ગણિત ક્વિઝ",
+                referenceTitle: "માહિતી (મૂલ્યો):",
+                refArihant: "અરિહંત ભગવાન", refArihantColor: "સફેદ",
+                refSiddha: "સિદ્ધ ભગવાન", refSiddhaColor: "લાલ",
+                refAcharya: "આચાર્ય ભગવાન", refAcharyaColor: "પીળો",
+                refUpadhyay: "ઉપાધ્યાય ભગવાન", refUpadhyayColor: "લીલો",
+                refSadhu: "સાધુ ભગવાન", refSadhuColor: "કાળો",
+                toggleInstructionsShow: "સૂચનાઓ જુઓ",
+                toggleInstructionsHide: "સૂચનાઓ છુપાવો",
+                instructionsTitle: "રમતની સૂચનાઓ:",
+                instruction1: "ઉપર આપેલ 'માહિતી' વિભાગમાં ભગવાનના નામ અને તેમના અંકો આપેલા છે. સમીકરણોમાં ભગવાનના નામનો અર્થ તેમના અંક તરીકે લેવો.",
+                instruction2: "દરેક પ્રશ્નમાં એક ગાણિતિક સમીકરણ હશે જેમાં તમારે 'A' ની કિંમત શોધવાની રહેશે.",
+                instruction3: "'A' ની જે કિંમત આવે, તે કિંમત કયા ભગવાનની છે તે નામ આપેલા પાંચ વિકલ્પોમાંથી પસંદ કરો.",
+                instruction4: "તમારો જવાબ પસંદ કરતાની સાથે જ પરિણામ બતાવવામાં આવશે. જો જવાબ ખોટો હશે, તો સાચી ગણતરી પણ બતાવવામાં આવશે.",
+                instruction5: "દરેક સાચા જવાબ માટે તમને ૧ પોઇન્ટ મળશે.",
+                instruction6: "બધા પ્રશ્નોના જવાબ આપ્યા પછી, તમારો અંતિમ સ્કોર પ્રદર્શિત થશે.",
+                questionPrompt: "નીચેના સમીકરણમાં 'A' ની કિંમત શોધો અને તે કિંમત કયા ભગવાનની છે તે જણાવો:",
+                questionLabel: "પ્રશ્ન",
+                scoreLabel: "સ્કોર:",
+                feedbackCorrect: "શાબાશ! તમારો જવાબ સાચો છે.",
+                feedbackIncorrectPrefix: "માફ કરશો, ખોટો જવાબ. સાચો જવાબ છે: ",
+                feedbackIncorrectSuffix: " (જેમનું મૂલ્ય ",
+                feedbackIncorrectSuffix2: " છે).",
+                calculationStepsTitle: "ગણતરીના પગલાં:",
+                nextButton: "આગળનો પ્રશ્ન",
+                restartButton: "ફરીથી શરૂ કરો",
+                quizComplete: "ક્વિઝ પૂર્ણ!",
+                finalScoreMessage: "તમારો કુલ સ્કોર: ",
+                finalScoreSuffix: ". સરસ પ્રયાસ!",
+                gameEnded: "રમત સમાપ્ત!"
+            },
+            en: {
+                quizTitle: "Holy Numbers Math Quiz",
+                referenceTitle: "Information (Values):",
+                refArihant: "Arihant Bhagwan", refArihantColor: "White",
+                refSiddha: "Siddha Bhagwan", refSiddhaColor: "Red",
+                refAcharya: "Acharya Bhagwan", refAcharyaColor: "Yellow",
+                refUpadhyay: "Upadhyay Bhagwan", refUpadhyayColor: "Green",
+                refSadhu: "Sadhu Bhagwan", refSadhuColor: "Black",
+                toggleInstructionsShow: "Show Instructions",
+                toggleInstructionsHide: "Hide Instructions",
+                instructionsTitle: "Game Instructions:",
+                instruction1: "The 'Information' section above provides the names of Gods and their numbers. In equations, the name of a God means their number.",
+                instruction2: "Each question will have a mathematical equation where you need to find the value of 'A'.",
+                instruction3: "From the five options given, select the name of the God whose value matches the calculated value of 'A'.",
+                instruction4: "Results will be shown as soon as you select your answer. If the answer is wrong, the correct calculation will also be shown.",
+                instruction5: "You will get 1 point for each correct answer.",
+                instruction6: "After answering all questions, your final score will be displayed.",
+                questionPrompt: "Find the value of 'A' in the equation below and state which God's value it is:",
+                questionLabel: "Question",
+                scoreLabel: "Score:",
+                feedbackCorrect: "Well done! Your answer is correct.",
+                feedbackIncorrectPrefix: "Sorry, wrong answer. The correct answer is: ",
+                feedbackIncorrectSuffix: " (whose value is ",
+                feedbackIncorrectSuffix2: ").",
+                calculationStepsTitle: "Calculation Steps:",
+                nextButton: "Next Question",
+                restartButton: "Restart Game",
+                quizComplete: "Quiz Complete!",
+                finalScoreMessage: "Your total score: ",
+                finalScoreSuffix: ". Great effort!",
+                gameEnded: "Game Over!"
+            }
+        };
+
+        // --- Entity Data (Neutral Keys) ---
+        const entityInternalValues = {
+            ARIHANT: 12, SIDDHA: 8, ACHARYA: 36, UPADHYAY: 25, SADHU: 27
+        };
+        const entityKeys = Object.keys(entityInternalValues); // ["ARIHANT", "SIDDHA", ...]
+
+        // --- Question Data ---
+        const questionsData = [
+            // Each question needs equation templates and calculation steps for both languages
+            { numericalAnswer: 12, answerKey: "ARIHANT", 
+              equation_gu: (val) => `A + ${translations.gu.refSiddha} = ૨૦`, 
+              equation_en: (val) => `A + ${translations.en.refSiddha} = 20`,
+              calculationSteps_gu: ["મૂળ સમીકરણ: A + સિદ્ધ ભગવાન = ૨૦", "અહીં, સિદ્ધ ભગવાન = ૮.", "તેથી, A + ૮ = ૨૦.", "A = ૨૦ - ૮.", "A = ૧૨.", `<b>૧૨ એ ${translations.gu.refArihant} નું મૂલ્ય છે.</b>`],
+              calculationSteps_en: ["Original equation: A + Siddha Bhagwan = 20", "Here, Siddha Bhagwan = 8.", "So, A + 8 = 20.", "A = 20 - 8.", "A = 12.", `<b>12 is the value of ${translations.en.refArihant}.</b>`]
+            },
+            { numericalAnswer: 8, answerKey: "SIDDHA", 
+              equation_gu: (val) => `${translations.gu.refArihant} - A = ૪`, 
+              equation_en: (val) => `${translations.en.refArihant} - A = 4`,
+              calculationSteps_gu: ["મૂળ સમીકરણ: અરિહંત ભગવાન - A = ૪", "અહીં, અરિહંત ભગવાન = ૧૨.", "તેથી, ૧૨ - A = ૪.", "A = ૧૨ - ૪.", "A = ૮.", `<b>૮ એ ${translations.gu.refSiddha} નું મૂલ્ય છે.</b>`],
+              calculationSteps_en: ["Original equation: Arihant Bhagwan - A = 4", "Here, Arihant Bhagwan = 12.", "So, 12 - A = 4.", "A = 12 - 4.", "A = 8.", `<b>8 is the value of ${translations.en.refSiddha}.</b>`]
+            },
+            { numericalAnswer: 12, answerKey: "ARIHANT", 
+              equation_gu: (val) => `A × ${translations.gu.refSiddha} = ૯૬`, 
+              equation_en: (val) => `A × ${translations.en.refSiddha} = 96`,
+              calculationSteps_gu: ["મૂળ સમીકરણ: A × સિદ્ધ ભગવાન = ૯૬", "અહીં, સિદ્ધ ભગવાન = ૮.", "તેથી, A × ૮ = ૯૬.", "A = ૯૬ ÷ ૮.", "A = ૧૨.", `<b>૧૨ એ ${translations.gu.refArihant} નું મૂલ્ય છે.</b>`],
+              calculationSteps_en: ["Original equation: A × Siddha Bhagwan = 96", "Here, Siddha Bhagwan = 8.", "So, A × 8 = 96.", "A = 96 ÷ 8.", "A = 12.", `<b>12 is the value of ${translations.en.refArihant}.</b>`]
+            },
+            { numericalAnswer: 27, answerKey: "SADHU", 
+              equation_gu: (val) => `A - ${translations.gu.refUpadhyay} = ૨`, 
+              equation_en: (val) => `A - ${translations.en.refUpadhyay} = 2`,
+              calculationSteps_gu: ["મૂળ સમીકરણ: A - ઉપાધ્યાય ભગવાન = ૨", "અહીં, ઉપાધ્યાય ભગવાન = ૨૫.", "તેથી, A - ૨૫ = ૨.", "A = ૨ + ૨૫.", "A = ૨૭.", `<b>૨૭ એ ${translations.gu.refSadhu} નું મૂલ્ય છે.</b>`],
+              calculationSteps_en: ["Original equation: A - Upadhyay Bhagwan = 2", "Here, Upadhyay Bhagwan = 25.", "So, A - 25 = 2.", "A = 2 + 25.", "A = 27.", `<b>27 is the value of ${translations.en.refSadhu}.</b>`]
+            },
+            { numericalAnswer: 8, answerKey: "SIDDHA", 
+              equation_gu: (val) => `${translations.gu.refAcharya} - A = ૨૮`, 
+              equation_en: (val) => `${translations.en.refAcharya} - A = 28`,
+              calculationSteps_gu: ["મૂળ સમીકરણ: આચાર્ય ભગવાન - A = ૨૮", "અહીં, આચાર્ય ભગવાન = ૩૬.", "તેથી, ૩૬ - A = ૨૮.", "A = ૩૬ - ૨૮.", "A = ૮.", `<b>૮ એ ${translations.gu.refSiddha} નું મૂલ્ય છે.</b>`],
+              calculationSteps_en: ["Original equation: Acharya Bhagwan - A = 28", "Here, Acharya Bhagwan = 36.", "So, 36 - A = 28.", "A = 36 - 28.", "A = 8.", `<b>8 is the value of ${translations.en.refSiddha}.</b>`]
+            },
+            { numericalAnswer: 27, answerKey: "SADHU", 
+              equation_gu: (val) => `${translations.gu.refUpadhyay} + A = ૫૨`, 
+              equation_en: (val) => `${translations.en.refUpadhyay} + A = 52`,
+              calculationSteps_gu: ["મૂળ સમીકરણ: ઉપાધ્યાય ભગવાન + A = ૫૨", "અહીં, ઉપાધ્યાય ભગવાન = ૨૫.", "તેથી, ૨૫ + A = ૫૨.", "A = ૫૨ - ૨૫.", "A = ૨૭.", `<b>૨૭ એ ${translations.gu.refSadhu} નું મૂલ્ય છે.</b>`],
+              calculationSteps_en: ["Original equation: Upadhyay Bhagwan + A = 52", "Here, Upadhyay Bhagwan = 25.", "So, 25 + A = 52.", "A = 52 - 25.", "A = 27.", `<b>27 is the value of ${translations.en.refSadhu}.</b>`]
+            },
+            { numericalAnswer: 12, answerKey: "ARIHANT", 
+              equation_gu: (val) => `${translations.gu.refAcharya} ÷ A = ૩`, 
+              equation_en: (val) => `${translations.en.refAcharya} ÷ A = 3`,
+              calculationSteps_gu: ["મૂળ સમીકરણ: આચાર્ય ભગવાન ÷ A = ૩", "અહીં, આચાર્ય ભગવાન = ૩૬.", "તેથી, ૩૬ ÷ A = ૩.", "A = ૩૬ ÷ ૩.", "A = ૧૨.", `<b>૧૨ એ ${translations.gu.refArihant} નું મૂલ્ય છે.</b>`],
+              calculationSteps_en: ["Original equation: Acharya Bhagwan ÷ A = 3", "Here, Acharya Bhagwan = 36.", "So, 36 ÷ A = 3.", "A = 36 ÷ 3.", "A = 12.", `<b>12 is the value of ${translations.en.refArihant}.</b>`]
+            },
+            { numericalAnswer: 25, answerKey: "UPADHYAY", 
+              equation_gu: (val) => `૨૦૦ ÷ A = ${translations.gu.refSiddha}`, 
+              equation_en: (val) => `200 ÷ A = ${translations.en.refSiddha}`,
+              calculationSteps_gu: ["મૂળ સમીકરણ: ૨૦૦ ÷ A = સિદ્ધ ભગવાન", "અહીં, સિદ્ધ ભગવાન = ૮.", "તેથી, ૨૦૦ ÷ A = ૮.", "A = ૨૦૦ ÷ ૮.", "A = ૨૫.", `<b>૨૫ એ ${translations.gu.refUpadhyay} નું મૂલ્ય છે.</b>`],
+              calculationSteps_en: ["Original equation: 200 ÷ A = Siddha Bhagwan", "Here, Siddha Bhagwan = 8.", "So, 200 ÷ A = 8.", "A = 200 ÷ 8.", "A = 25.", `<b>25 is the value of ${translations.en.refUpadhyay}.</b>`]
+            },
+            { numericalAnswer: 36, answerKey: "ACHARYA", 
+              equation_gu: (val) => `A - ${translations.gu.refSadhu} = ${translations.gu.refSadhu} ÷ ૩`, 
+              equation_en: (val) => `A - ${translations.en.refSadhu} = ${translations.en.refSadhu} ÷ 3`,
+              calculationSteps_gu: ["મૂળ સમીકરણ: A - સાધુ ભગવાન = સાધુ ભગવાન ÷ ૩", "અહીં, સાધુ ભગવાન = ૨૭.", "તેથી, A - ૨૭ = ૨૭ ÷ ૩.", "A - ૨૭ = ૯.", "A = ૯ + ૨૭.", "A = ૩૬.", `<b>૩૬ એ ${translations.gu.refAcharya} નું મૂલ્ય છે.</b>`],
+              calculationSteps_en: ["Original equation: A - Sadhu Bhagwan = Sadhu Bhagwan ÷ 3", "Here, Sadhu Bhagwan = 27.", "So, A - 27 = 27 ÷ 3.", "A - 27 = 9.", "A = 9 + 27.", "A = 36.", `<b>36 is the value of ${translations.en.refAcharya}.</b>`]
+            },
+            { numericalAnswer: 27, answerKey: "SADHU", 
+              equation_gu: (val) => `A × (${translations.gu.refSiddha} ÷ ૨) = ${translations.gu.refSadhu} × ૪`, 
+              equation_en: (val) => `A × (${translations.en.refSiddha} ÷ 2) = ${translations.en.refSadhu} × 4`,
+              calculationSteps_gu: ["મૂળ સમીકરણ: A × (સિદ્ધ ભગવાન ÷ ૨) = સાધુ ભગવાન × ૪", "અહીં, સિદ્ધ ભગવાન = ૮ અને સાધુ ભગવાન = ૨૭.", "તેથી, A × (૮ ÷ ૨) = ૨૭ × ૪.", "A × ૪ = ૧૦૮.", "A = ૧૦૮ ÷ ૪.", "A = ૨૭.", `<b>૨૭ એ ${translations.gu.refSadhu} નું મૂલ્ય છે.</b>`],
+              calculationSteps_en: ["Original equation: A × (Siddha Bhagwan ÷ 2) = Sadhu Bhagwan × 4", "Here, Siddha Bhagwan = 8 and Sadhu Bhagwan = 27.", "So, A × (8 ÷ 2) = 27 × 4.", "A × 4 = 108.", "A = 108 ÷ 4.", "A = 27.", `<b>27 is the value of ${translations.en.refSadhu}.</b>`]
+            }
+        ];
+        
+        // --- Game State ---
+        let currentLanguage = 'gu';
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // --- DOM Elements ---
+        const langGuButton = document.getElementById('langGuButton');
+        const langEnButton = document.getElementById('langEnButton');
+        const quizTitleEl = document.getElementById('quizTitle');
+        const referenceTitleEl = document.getElementById('referenceTitle');
+        // Reference table entity names and colors
+        const refEntityEls = {
+            ARIHANT: { name: document.getElementById('refArihant'), color: document.getElementById('refArihantColor') },
+            SIDDHA:  { name: document.getElementById('refSiddha'),  color: document.getElementById('refSiddhaColor')  },
+            ACHARYA: { name: document.getElementById('refAcharya'), color: document.getElementById('refAcharyaColor') },
+            UPADHYAY:{ name: document.getElementById('refUpadhyay'),color: document.getElementById('refUpadhyayColor')},
+            SADHU:   { name: document.getElementById('refSadhu'),   color: document.getElementById('refSadhuColor')   }
+        };
+        const toggleInstructionsBtn = document.getElementById('toggleInstructions');
+        const instructionsSectionEl = document.getElementById('instructionsSection');
+        const instructionsTitleEl = document.getElementById('instructionsTitle');
+        const instructionEls = [
+            document.getElementById('instruction1'), document.getElementById('instruction2'),
+            document.getElementById('instruction3'), document.getElementById('instruction4'),
+            document.getElementById('instruction5'), document.getElementById('instruction6')
+        ];
+        const questionNumberEl = document.getElementById('questionNumber');
+        const questionTextEl = document.getElementById('questionText');
+        const optionsContainerEl = document.getElementById('optionsContainer');
+        const feedbackAreaEl = document.getElementById('feedbackArea');
+        const scoreLabelEl = document.getElementById('scoreLabel');
+        const scoreAreaEl = document.getElementById('scoreArea'); // For the number part
+        const nextQuestionBtn = document.getElementById('nextQuestionButton');
+        const restartBtn = document.getElementById('restartButton');
+
+        // --- Utility Functions ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // --- Language and UI Update Functions ---
+        function updateUIForLanguage() {
+            const tr = translations[currentLanguage];
+            document.documentElement.lang = currentLanguage; // Set HTML lang attribute
+            document.title = tr.quizTitle; // Update page title
+
+            quizTitleEl.textContent = tr.quizTitle;
+            referenceTitleEl.textContent = tr.referenceTitle;
+
+            refEntityEls.ARIHANT.name.textContent = tr.refArihant;
+            refEntityEls.ARIHANT.color.textContent = tr.refArihantColor;
+            refEntityEls.SIDDHA.name.textContent = tr.refSiddha;
+            refEntityEls.SIDDHA.color.textContent = tr.refSiddhaColor;
+            refEntityEls.ACHARYA.name.textContent = tr.refAcharya;
+            refEntityEls.ACHARYA.color.textContent = tr.refAcharyaColor;
+            refEntityEls.UPADHYAY.name.textContent = tr.refUpadhyay;
+            refEntityEls.UPADHYAY.color.textContent = tr.refUpadhyayColor;
+            refEntityEls.SADHU.name.textContent = tr.refSadhu;
+            refEntityEls.SADHU.color.textContent = tr.refSadhuColor;
+            
+            toggleInstructionsBtn.textContent = instructionsSectionEl.style.display === 'none' ? tr.toggleInstructionsShow : tr.toggleInstructionsHide;
+            instructionsTitleEl.textContent = tr.instructionsTitle;
+            instructionEls.forEach((el, index) => el.textContent = tr[`instruction${index + 1}`]);
+            
+            scoreLabelEl.textContent = tr.scoreLabel;
+            nextQuestionBtn.textContent = tr.nextButton;
+            restartBtn.textContent = tr.restartButton;
+
+            // Update active language button style
+            if (currentLanguage === 'gu') {
+                langGuButton.classList.add('active');
+                langEnButton.classList.remove('active');
+                document.body.style.fontFamily = "'Noto Sans Gujarati', 'Roboto', sans-serif";
+            } else {
+                langEnButton.classList.add('active');
+                langGuButton.classList.remove('active');
+                document.body.style.fontFamily = "'Roboto', 'Noto Sans Gujarati', sans-serif";
+            }
+            // Reload current question to update its text and options
+            if (currentQuestionIndex < questionsData.length) {
+                 // If a question is loaded, refresh its display
+                loadQuestion();
+            } else if (feedbackAreaEl.innerHTML.includes(translations.gu.quizComplete) || feedbackAreaEl.innerHTML.includes(translations.en.quizComplete)) {
+                // If quiz is complete, refresh the final score message
+                 showFinalScoreMessage();
+            }
+        }
+        
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            updateUIForLanguage();
+        }
+
+        // --- Game Logic Functions ---
+        function generateOptions() {
+            const shuffledKeys = [...entityKeys]; // Create a copy to shuffle
+            shuffleArray(shuffledKeys);
+            return shuffledKeys; // Returns all 5 entity keys, shuffled
+        }
+
+        function displayCalculationSteps(steps) {
+            const tr = translations[currentLanguage];
+            const stepsHtml = steps.map(step => `<p>${step}</p>`).join('');
+            const calculationDiv = document.createElement('div');
+            calculationDiv.className = 'calculation-steps';
+            calculationDiv.innerHTML = `<h3>${tr.calculationStepsTitle}</h3>${stepsHtml}`;
+            feedbackAreaEl.appendChild(calculationDiv);
+        }
+
+        function handleOptionClick(selectedKey, buttonEl) {
+            const currentQuestion = questionsData[currentQuestionIndex];
+            const correctAnswerKey = currentQuestion.answerKey;
+            const tr = translations[currentLanguage];
+
+            const optionButtons = optionsContainerEl.querySelectorAll('.option-button');
+            optionButtons.forEach(btn => {
+                btn.disabled = true;
+                if (btn.dataset.key === correctAnswerKey && selectedKey !== correctAnswerKey) {
+                    btn.classList.add('correct-selected'); 
+                }
+            });
+            
+            feedbackAreaEl.innerHTML = ''; 
+
+            if (selectedKey === correctAnswerKey) {
+                score++;
+                const p = document.createElement('p');
+                p.className = 'feedback-text correct';
+                p.textContent = tr.feedbackCorrect;
+                feedbackAreaEl.appendChild(p);
+                buttonEl.classList.add('correct-selected');
+            } else {
+                const p = document.createElement('p');
+                p.className = 'feedback-text incorrect';
+                const correctEntityDisplayName = tr[`ref${correctAnswerKey.charAt(0) + correctAnswerKey.slice(1).toLowerCase()}`];
+                p.textContent = `${tr.feedbackIncorrectPrefix}${correctEntityDisplayName}${tr.feedbackIncorrectSuffix}${currentQuestion.numericalAnswer}${tr.feedbackIncorrectSuffix2}`;
+                feedbackAreaEl.appendChild(p);
+                buttonEl.classList.add('incorrect-selected');
+                displayCalculationSteps(currentQuestion[`calculationSteps_${currentLanguage}`]);
+            }
+            scoreAreaEl.textContent = `${tr.scoreLabel} ${score}`;
+
+            if (currentQuestionIndex < questionsData.length - 1) {
+                nextQuestionBtn.style.display = 'inline-block';
+            } else {
+                restartBtn.style.display = 'inline-block';
+                showFinalScoreMessage();
+            }
+        }
+        
+        function showFinalScoreMessage() {
+            const tr = translations[currentLanguage];
+            const finalMsgP = document.createElement('p');
+            finalMsgP.innerHTML = `${tr.quizComplete} ${tr.finalScoreMessage}<strong class="text-2xl">${score} / ${questionsData.length}</strong>${tr.finalScoreSuffix}`;
+            finalMsgP.className = 'text-blue-700 font-semibold my-3 text-lg';
+            
+            // Clear feedback area before adding final message, or prepend if other messages exist (e.g. last question feedback)
+            if (feedbackAreaEl.innerHTML.includes(tr.calculationStepsTitle) || feedbackAreaEl.innerHTML.includes(tr.feedbackCorrect) || feedbackAreaEl.innerHTML.includes(tr.feedbackIncorrectPrefix)) {
+                 // If last question feedback is there, prepend
+                 feedbackAreaEl.insertBefore(finalMsgP, feedbackAreaEl.firstChild);
+            } else {
+                 feedbackAreaEl.innerHTML = ''; // Clear if no relevant prior message
+                 feedbackAreaEl.appendChild(finalMsgP);
+            }
+
+            questionTextEl.textContent = tr.gameEnded;
+            questionNumberEl.textContent = '';
+            optionsContainerEl.innerHTML = ''; 
+        }
+
+        function loadQuestion() {
+            feedbackAreaEl.innerHTML = ''; 
+            const tr = translations[currentLanguage];
+
+            if (currentQuestionIndex < questionsData.length) {
+                const currentQuestion = questionsData[currentQuestionIndex];
+                questionNumberEl.textContent = `${tr.questionLabel} ${currentQuestionIndex + 1} / ${questionsData.length}`;
+                
+                // Construct equation string using the language-specific function/template
+                const equationText = currentQuestion[`equation_${currentLanguage}`](entityInternalValues[currentQuestion.answerKey]); // Pass value if needed by template
+                questionTextEl.innerHTML = `${tr.questionPrompt}<br><strong class="text-xl">${equationText}</strong>`;
+                
+                optionsContainerEl.innerHTML = ''; 
+                const optionKeys = generateOptions(); // Gets shuffled array of ["ARIHANT", "SIDDHA", ...]
+                optionKeys.forEach(key => {
+                    const button = document.createElement('button');
+                    button.classList.add('option-button');
+                    // Get display name based on current language and key
+                    const entityDisplayName = tr[`ref${key.charAt(0) + key.slice(1).toLowerCase()}`];
+                    button.textContent = entityDisplayName;
+                    button.dataset.key = key; 
+                    button.addEventListener('click', () => handleOptionClick(key, button));
+                    optionsContainerEl.appendChild(button);
+                });
+
+                nextQuestionBtn.style.display = 'none';
+                restartBtn.style.display = 'none';
+            } else {
+                showFinalScoreMessage();
+                optionsContainerEl.innerHTML = '';
+            }
+        }
+
+        function handleNextQuestion() {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        function handleRestartGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            const tr = translations[currentLanguage];
+            scoreAreaEl.textContent = `${tr.scoreLabel} ${score}`;
+            feedbackAreaEl.innerHTML = '';
+            loadQuestion();
+        }
+
+        function handleToggleInstructions() {
+            const tr = translations[currentLanguage];
+            if (instructionsSectionEl.style.display === 'none') {
+                instructionsSectionEl.style.display = 'block';
+                toggleInstructionsBtn.textContent = tr.toggleInstructionsHide;
+            } else {
+                instructionsSectionEl.style.display = 'none';
+                toggleInstructionsBtn.textContent = tr.toggleInstructionsShow;
+            }
+        }
+
+        // --- Event Listeners ---
+        langGuButton.addEventListener('click', () => setLanguage('gu'));
+        langEnButton.addEventListener('click', () => setLanguage('en'));
+        nextQuestionBtn.addEventListener('click', handleNextQuestion);
+        restartBtn.addEventListener('click', handleRestartGame);
+        toggleInstructionsBtn.addEventListener('click', handleToggleInstructions);
+        
+        // --- Initial Load ---
+        setLanguage('gu'); // Default to Gujarati
+        // loadQuestion() is called by updateUIForLanguage which is called by setLanguage
+    </script>
+</body>
+</html>

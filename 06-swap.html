@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panch Parmeshthi Game</title>
+    <style>
+        /* General body styling for the game page */
+        body {
+            font-family: 'Arial', sans-serif; /* Standard sans-serif font */
+            text-align: center; /* Center-align text content */
+            margin: 0; /* Remove default margin */
+            padding: 20px; /* Add some padding around the content */
+            background-color: #f0f0f0; /* Light gray background for the page */
+            color: #333; /* Dark gray text color for readability */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center content horizontally */
+            min-height: 100vh; /* Ensure body takes at least full viewport height */
+        }
+
+        /* Styling for the main game title */
+        #game-title {
+            color: #00008B; /* Dark Blue color for the title */
+            margin-bottom: 15px;
+        }
+
+        /* Styling for the top controls area (language and toggle instructions) */
+        #top-controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        /* Styling for the language selector buttons container */
+        #language-selector {
+            margin-right: 10px; /* Space between language and toggle buttons */
+        }
+
+        /* Styling for individual buttons in top controls */
+        #language-selector button, #toggle-instructions-btn {
+            padding: 8px 15px; /* Padding inside buttons */
+            margin: 5px; /* Margin around buttons */
+            cursor: pointer; /* Pointer cursor on hover */
+            background-color: #3498db; /* Blue background for buttons */
+            color: white; /* White text color */
+            border: none; /* No border */
+            border-radius: 4px; /* Rounded corners */
+            font-size: 1em; /* Standard font size */
+            transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        /* Hover effect for language and toggle buttons */
+        #language-selector button:hover, #toggle-instructions-btn:hover {
+            background-color: #2980b9; /* Darker blue on hover */
+        }
+
+        /* Styling for the instructions area */
+        #instructions {
+            margin: 15px auto; /* Margin top/bottom and auto left/right for centering */
+            padding: 10px 15px; /* Padding inside the instruction box */
+            background-color: #fdf2f2; /* Lighter red background for instructions */
+            border-radius: 5px; /* Rounded corners */
+            max-width: 600px; /* Maximum width to keep it readable */
+            font-size: 1em; /* Increased font size */
+            color: darkred; /* Dark red text color */
+            font-weight: bold; /* Bold text */
+            border: 1px solid #e5b8b7; /* Light red border */
+            transition: opacity 0.3s ease, max-height 0.3s ease; /* Smooth transition for hide/show */
+            overflow: hidden; /* Needed for max-height transition */
+            max-height: 500px; /* Arbitrary large enough value for content */
+        }
+         #instructions p {
+            margin: 8px 0; /* Spacing between instruction paragraphs */
+        }
+        #instructions.hidden {
+            opacity: 0;
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+            border-width: 0;
+        }
+
+
+        /* Styling for the stopwatch display */
+        #stopwatch {
+            font-size: 1.5em; /* Larger font size for the timer */
+            margin-top: 10px; /* Margin above the stopwatch */
+            margin-bottom: 20px; /* Margin below the stopwatch */
+            color: #34495e; /* Dark gray-blue color for the timer */
+        }
+
+        /* Container for the game items (tiles) */
+        #game-container {
+            margin: 20px auto; /* Margin around the game area */
+            display: flex; /* Use flexbox for layout */
+            justify-content: center; /* Center items horizontally */
+            align-items: stretch; /* Align items to stretch vertically, making them same height */
+            flex-wrap: wrap; /* Allow items to wrap to the next line on smaller screens */
+            max-width: 900px; /* Max width for the game container */
+        }
+
+        /* Styling for individual game items (tiles) */
+        .item {
+            display: flex; /* Use flexbox for item content layout */
+            flex-direction: column; /* Stack content vertically (name above buttons) */
+            align-items: center; /* Center content horizontally within the item */
+            justify-content: space-between; /* Distribute space between the name and buttons */
+            margin: 8px; /* Margin around each item */
+            padding: 15px; /* Padding inside each item */
+            border: 1px solid #bdc3c7; /* Light gray border */
+            border-radius: 8px; /* Rounded corners for items */
+            width: 130px; /* Fixed width for items */
+            min-height: 140px; /* Minimum height to ensure consistency */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for a "card" effect */
+            text-align: center; /* Center text within the item */
+            transition: transform 0.2s ease, background-color 0.3s ease, color 0.3s ease; /* Smooth transform for potential animations and color changes */
+        }
+
+        /* Styling for the name text within each item */
+        .item-name {
+            font-weight: bold; /* Bold font for the name */
+            font-size: 1.1em; /* Slightly larger font size for names */
+            margin-bottom: 10px; /* Space below the name */
+            word-wrap: break-word; /* Allow long words to break and wrap */
+            flex-grow: 1; /* Allow name area to grow to fill space */
+            display: flex;
+            align-items: center; /* Vertically center the text if it wraps */
+        }
+
+        /* Styling for the container of move buttons within each item */
+        .buttons {
+            margin-top: auto; /* Push buttons to the bottom of the item */
+        }
+
+        /* Styling for the move buttons (up/down arrows) */
+        .buttons button {
+            margin: 3px; /* Margin around buttons */
+            padding: 8px 12px; /* Padding inside buttons */
+            cursor: pointer; /* Pointer cursor on hover */
+            background-color: #7f8c8d; /* Gray color for buttons */
+            color: white; /* White text color */
+            border: none; /* No border */
+            border-radius: 4px; /* Rounded corners for buttons */
+            font-size: 1.2em; /* Larger font size for arrow symbols */
+            transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+        }
+        .buttons button:disabled {
+            background-color: #bdc3c7; /* Lighter color for disabled buttons */
+            cursor: not-allowed; /* Indicate button is not clickable */
+        }
+
+        /* Hover effect for move buttons */
+        .buttons button:not(:disabled):hover {
+            background-color: #596566; /* Darker gray on hover */
+        }
+
+        /* Styling for the win message area */
+        #message {
+            margin-top: 20px; /* Margin above the message */
+            font-size: 1.2em; /* Larger font size for the message */
+            font-weight: bold; /* Bold font for the message */
+            color: #27ae60; /* Green color for success message */
+            min-height: 1.5em; /* Reserve space for the message to avoid layout shifts */
+        }
+
+        /* Styling for the New Game button container */
+        #new-game-button-container {
+            margin-top: 20px;
+            min-height: 40px; /* Reserve space for the button */
+        }
+        /* Styling for the New Game button */
+        #new-game-btn {
+            padding: 10px 20px;
+            font-size: 1.1em;
+            background-color: #2ecc71; /* Green color for new game */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #new-game-btn:hover {
+            background-color: #27ae60; /* Darker green on hover */
+        }
+
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 700px) {
+            body {
+                padding: 10px; /* Reduce padding on smaller screens */
+            }
+            #game-container {
+                flex-direction: column; /* Stack items vertically on small screens */
+                align-items: center; /* Center items when stacked vertically */
+                flex-wrap: nowrap; /* Prevent wrapping when in column mode */
+            }
+            .item {
+                width: 80%; /* Make items wider to take more screen width */
+                max-width: 300px; /* But not too wide */
+                min-height: auto; /* Adjust min-height for stacked layout, let content define it */
+                padding: 10px; /* Adjust padding for smaller items */
+                margin-bottom: 12px; /* Add more bottom margin between stacked items */
+            }
+            .item-name {
+                font-size: 1em; /* Adjust name font size */
+                margin-bottom: 8px; /* Adjust space below name */
+            }
+            .buttons button {
+                font-size: 1em; /* Adjust button font size */
+                padding: 6px 10px; /* Adjust button padding */
+            }
+            #game-title {
+                font-size: 1.8em; /* Adjust title size */
+            }
+            #language-selector button, #toggle-instructions-btn {
+                font-size: 0.9em; /* Adjust button font size */
+                padding: 7px 12px;
+            }
+        }
+        @media (max-width: 400px) {
+            .item {
+                width: 90%; /* Make items even wider on very small screens */
+            }
+            .item-name {
+                font-size: 0.9em; /* Further reduce name font size on very small screens */
+            }
+            .buttons button {
+                font-size: 0.9em; /* Further reduce button font size */
+            }
+             #game-title {
+                font-size: 1.5em;
+            }
+            #instructions {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 id="game-title">Arrange Panch Parmeshthi</h1>
+    
+    <div id="top-controls">
+        <div id="language-selector">
+            <button onclick="switchLanguage('en')">English</button>
+            <button onclick="switchLanguage('gu')">ગુજરાતી</button>
+        </div>
+        <button id="toggle-instructions-btn" onclick="toggleInstructions()">Hide Instructions</button>
+    </div>
+
+    <div id="instructions">
+        <p id="instruction-text">Move the terms using the ↑ and ↓ buttons to arrange them in the correct order.</p>
+        <p id="instruction-order"></p> 
+    </div>
+
+    <div id="stopwatch">Time: 0s</div>
+    
+    <div id="game-container"></div>
+    
+    <h2 id="message"></h2>
+
+    <div id="new-game-button-container"></div>
+
+    <script>
+        // Array of objects, each representing a Panch Parmeshthi term with its properties
+        const TERMS_DATA = [
+            { id: 'arihant', en: "Arihant Bhagwan", gu: "અરિહંત ભગવાન", color: "#FFFFFF", textColor: "#333333", order: 0 },
+            { id: 'siddha', en: "Siddha Bhagwan", gu: "સિદ્ધ ભગવાન", color: "#FF4136", textColor: "white", order: 1 },
+            { id: 'acharya', en: "Acharya Bhagwan", gu: "આચાર્ય ભગવાન", color: "#FFDC00", textColor: "#333333", order: 2 },
+            { id: 'upadhyaya', en: "Upadhyaya Bhagwan", gu: "ઉપાધ્યાય ભગવાન", color: "#2ECC40", textColor: "white", order: 3 },
+            { id: 'sadhu', en: "Sadhu Bhagwan", gu: "સાધુ ભગવાન", color: "#333333", textColor: "white", order: 4 }
+        ];
+
+        let currentLanguage = 'en'; // Default language
+        let displayedTerms = [];    // Array to hold the current order of terms displayed in the game
+        let startTime = null;       // Variable for stopwatch start time
+        let timerInterval = null;   // Variable for stopwatch interval ID
+        let gameWon = false;        // Flag to track if the game has been won
+        let instructionsVisible = true; // Track visibility of instructions
+        let timerStarted = false;   // Flag to track if the timer has started
+
+        // Get references to HTML elements that will be manipulated by JavaScript
+        const gameTitleEl = document.getElementById('game-title');
+        const instructionTextEl = document.getElementById('instruction-text');
+        const instructionOrderEl = document.getElementById('instruction-order');
+        const instructionsEl = document.getElementById('instructions');
+        const toggleInstructionsBtnEl = document.getElementById('toggle-instructions-btn');
+        const stopwatchEl = document.getElementById('stopwatch');
+        const gameContainerEl = document.getElementById('game-container');
+        const messageEl = document.getElementById('message');
+        const newGameButtonContainerEl = document.getElementById('new-game-button-container');
+
+        // Object containing all translatable strings for the game
+        const SCRIPT_TEXTS = {
+            en: {
+                title: "Arrange Panch Parmeshthi",
+                instruction: "Move the terms using the ↑ and ↓ buttons to arrange them in the correct order.", // Updated instruction
+                orderHint: "Correct order: Arihant (White), Siddha (Red), Acharya (Yellow), Upadhyaya (Green), Sadhu (Black).",
+                winMessage: "Congratulations! You arranged the terms correctly!",
+                timePrefix: "Time: ",
+                timeSuffix: "s",
+                hideInstructions: "Hide Instructions",
+                showInstructions: "Show Instructions",
+                newGame: "New Game"
+            },
+            gu: {
+                title: "પંચ પરમેષ્ઠિ ગોઠવો",
+                instruction: "ટાઇલ્સને યોગ્ય ક્રમમાં ગોઠવવા માટે ઉપર (↑) અથવા નીચે (↓) બટનનો ઉપયોગ કરો.", // Updated instruction
+                orderHint: "સાચો ક્રમ: અરિહંત (સફેદ), સિદ્ધ (લાલ), આચાર્ય (પીળો), ઉપાધ્યાય (લીલો), સાધુ (કાળો).",
+                winMessage: "અભિનંદન! તમે પદોને સાચા ક્રમમાં ગોઠવ્યા!",
+                timePrefix: "સમય: ",
+                timeSuffix: " સેકન્ડ",
+                hideInstructions: "સૂચનાઓ છુપાવો",
+                showInstructions: "સૂચનાઓ બતાવો",
+                newGame: "નવી રમત"
+            }
+        };
+
+        /**
+         * Shuffles an array in place using the Fisher-Yates algorithm.
+         * @param {Array} array - The array to be shuffled.
+         */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // ES6 destructuring swap
+            }
+        }
+
+        /**
+         * Updates all displayable texts on the page based on the current language.
+         */
+        function updateTexts() {
+            const texts = SCRIPT_TEXTS[currentLanguage];
+            document.title = texts.title + " Game"; // Update page title
+            gameTitleEl.textContent = texts.title;
+            instructionTextEl.textContent = texts.instruction;
+            instructionOrderEl.textContent = texts.orderHint;
+            toggleInstructionsBtnEl.textContent = instructionsVisible ? texts.hideInstructions : texts.showInstructions;
+
+            // Update New Game button text if it exists
+            const newGameBtn = document.getElementById('new-game-btn');
+            if (newGameBtn) {
+                newGameBtn.textContent = texts.newGame;
+            }
+
+            // If game was already won, re-display win message in the new language
+            if (gameWon) {
+                // Ensure startTime has a value before calculating elapsed time for win message
+                const elapsedTime = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
+                messageEl.textContent = `${texts.winMessage} ${texts.timePrefix}${elapsedTime}${texts.timeSuffix}`;
+            } else {
+                 messageEl.textContent = ''; // Clear message if game not won yet
+            }
+            
+            // Update stopwatch display text
+            let currentTimeDisplay = 0;
+            if (startTime && !gameWon) {
+                currentTimeDisplay = Math.floor((Date.now() - startTime) / 1000);
+            } else if (!startTime) { // Timer not started yet
+                 currentTimeDisplay = 0;
+            }
+            
+             if (gameWon && startTime) { 
+                currentTimeDisplay = Math.floor((Date.now() - startTime) / 1000); 
+             }
+
+            stopwatchEl.textContent = `${texts.timePrefix}${currentTimeDisplay}${texts.timeSuffix}`;
+        }
+        
+        /**
+         * Toggles the visibility of the instructions panel.
+         */
+        function toggleInstructions() {
+            instructionsVisible = !instructionsVisible;
+            if (instructionsVisible) {
+                instructionsEl.classList.remove('hidden');
+            } else {
+                instructionsEl.classList.add('hidden');
+            }
+            updateTexts(); // Update button text
+        }
+
+
+        /**
+         * Switches the game language and updates the UI.
+         * @param {string} lang - The language code ('en' or 'gu').
+         */
+        function switchLanguage(lang) {
+            currentLanguage = lang;
+            updateTexts(); // Update all static text elements
+            renderGameBoard(); // Re-render the game board with new language names on tiles
+            if (!gameWon) { 
+                messageEl.textContent = '';
+            }
+        }
+
+        /**
+         * Renders the game board with the current order of terms.
+         * It clears the existing board and creates new item elements.
+         */
+        function renderGameBoard() {
+            gameContainerEl.innerHTML = ''; // Clear previous game board
+            displayedTerms.forEach((term, index) => {
+                const itemBox = document.createElement('div');
+                itemBox.className = 'item';
+                itemBox.style.backgroundColor = term.color;
+                itemBox.style.color = term.textColor;
+                
+                const termNameDiv = document.createElement('div');
+                termNameDiv.className = 'item-name';
+                termNameDiv.textContent = term[currentLanguage]; // Display name in current language
+                
+                const buttonsDiv = document.createElement('div');
+                buttonsDiv.className = 'buttons';
+                
+                // Create UP move button
+                const upButton = document.createElement('button');
+                upButton.textContent = '↑'; // Changed from '←'
+                upButton.onclick = () => moveItem(index, -1); // -1 still means move towards start of array (visually "up" in a list)
+                if (index === 0 || gameWon) upButton.disabled = true; 
+
+                // Create DOWN move button
+                const downButton = document.createElement('button');
+                downButton.textContent = '↓'; // Changed from '→'
+                downButton.onclick = () => moveItem(index, 1); // +1 still means move towards end of array (visually "down" in a list)
+                if (index === displayedTerms.length - 1 || gameWon) downButton.disabled = true; 
+                
+                buttonsDiv.appendChild(upButton);   // Added up button
+                buttonsDiv.appendChild(downButton); // Added down button
+                
+                itemBox.appendChild(termNameDiv);
+                itemBox.appendChild(buttonsDiv);
+                
+                gameContainerEl.appendChild(itemBox);
+            });
+        }
+
+        /**
+         * Moves an item in the displayedTerms array and re-renders the board.
+         * @param {number} index - The current index of the item to move.
+         * @param {number} direction - -1 to move "up" (earlier in array), 1 to move "down" (later in array).
+         */
+        function moveItem(index, direction) {
+            if (gameWon) return; 
+
+            if (!timerStarted) {
+                startStopwatch();
+                timerStarted = true;
+            }
+
+            const newIndex = index + direction;
+            if (newIndex >= 0 && newIndex < displayedTerms.length) {
+                [displayedTerms[index], displayedTerms[newIndex]] = [displayedTerms[newIndex], displayedTerms[index]];
+                renderGameBoard(); 
+                checkWin(); 
+            }
+        }
+
+        /**
+         * Checks if the current arrangement of terms is the correct (winning) one.
+         */
+        function checkWin() {
+            if (gameWon) return; 
+            
+            const currentOrderIds = displayedTerms.map(term => term.id);
+            // Ensure TERMS_DATA is sorted by 'order' property to get the correct target order
+            const correctOrderIds = [...TERMS_DATA].sort((a, b) => a.order - b.order).map(term => term.id); 
+            
+            if (JSON.stringify(currentOrderIds) === JSON.stringify(correctOrderIds)) {
+                gameWon = true;
+                if(timerInterval) clearInterval(timerInterval); 
+                
+                const finalElapsedTime = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
+                const texts = SCRIPT_TEXTS[currentLanguage];
+                messageEl.textContent = `${texts.winMessage} ${texts.timePrefix}${finalElapsedTime}${texts.timeSuffix}`;
+                
+                renderGameBoard(); 
+                
+                const newGameBtn = document.createElement('button');
+                newGameBtn.id = 'new-game-btn';
+                newGameBtn.textContent = texts.newGame;
+                newGameBtn.onclick = initializeGame;
+                newGameButtonContainerEl.innerHTML = ''; 
+                newGameButtonContainerEl.appendChild(newGameBtn);
+
+            } else {
+                messageEl.textContent = ''; 
+            }
+        }
+
+        /**
+         * Starts the stopwatch, updating the display every second.
+         */
+        function startStopwatch() {
+            startTime = Date.now(); 
+            const texts = SCRIPT_TEXTS[currentLanguage];
+            
+            stopwatchEl.textContent = `${texts.timePrefix}0${texts.timeSuffix}`; 
+
+            if (timerInterval) clearInterval(timerInterval); 
+
+            timerInterval = setInterval(() => {
+                if (gameWon || !startTime) { 
+                    if(timerInterval) clearInterval(timerInterval);
+                    return;
+                }
+                const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+                stopwatchEl.textContent = `${texts.timePrefix}${elapsedTime}${texts.timeSuffix}`;
+            }, 1000); 
+        }
+
+        /**
+         * Initializes the game: resets state, shuffles terms, updates texts, and prepares the stopwatch.
+         */
+        function initializeGame() {
+            gameWon = false; 
+            timerStarted = false; 
+            messageEl.textContent = ''; 
+            newGameButtonContainerEl.innerHTML = ''; 
+            
+            if (timerInterval) {
+                clearInterval(timerInterval); 
+            }
+            timerInterval = null; 
+            startTime = null;     
+
+            const baseTerms = [...TERMS_DATA].sort((a, b) => a.order - b.order);
+            displayedTerms = [...baseTerms]; 
+            shuffleArray(displayedTerms);
+            
+            updateTexts(); 
+            renderGameBoard(); 
+            
+            if (instructionsVisible) {
+                instructionsEl.classList.remove('hidden');
+            } else {
+                instructionsEl.classList.add('hidden');
+            }
+        }
+
+        // Initialize the game when the DOM content is fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeGame();
+            if (instructionsVisible) {
+                instructionsEl.classList.remove('hidden');
+                toggleInstructionsBtnEl.textContent = SCRIPT_TEXTS[currentLanguage].hideInstructions;
+            } else {
+                 instructionsEl.classList.add('hidden');
+                 toggleInstructionsBtnEl.textContent = SCRIPT_TEXTS[currentLanguage].showInstructions;
+            }
+        });
+    </script>
+</body>
+</html>

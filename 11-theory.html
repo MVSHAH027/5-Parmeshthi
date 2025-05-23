@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="gu"> <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>પંચ પરમેષ્ઠિ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Tailwind bg-gray-100 */
+        }
+        .card-content {
+            color: #374151; /* Tailwind text-gray-700 for general text */
+        }
+        .card-title {
+            font-weight: 700; /* bold */
+        }
+        .lang-btn-active {
+            background-color: #c2410c; /* Tailwind orange-700 */
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .lang-btn-inactive {
+            background-color: #d1d5db; /* Tailwind gray-300 */
+            color: #374151; /* Tailwind gray-700 */
+             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+    </style>
+</head>
+<body class="bg-slate-100">
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <div class="text-center my-6 space-x-2 sm:space-x-4">
+            <button id="btn-gu" class="px-4 py-2 sm:px-6 sm:py-2 text-sm sm:text-base rounded-md font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-75 transition-colors duration-150 ease-in-out">ગુજરાતી</button>
+            <button id="btn-en" class="px-4 py-2 sm:px-6 sm:py-2 text-sm sm:text-base rounded-md font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition-colors duration-150 ease-in-out">English</button>
+        </div>
+
+        <header class="my-8 sm:my-12">
+            <h1 id="main-title" class="text-4xl sm:text-5xl font-bold text-center text-amber-700">પંચ પરમેષ્ઠિ</h1>
+        </header>
+
+        <main class="space-y-8">
+
+            <section class="bg-white shadow-xl rounded-xl p-6 border-t-8 border-yellow-400 max-w-2xl mx-auto w-full">
+                <h2 id="arihant-title" class="text-2xl sm:text-3xl font-bold text-amber-600 mb-2 text-center card-title">અરિહંત ભગવાન</h2>
+                <p id="arihant-subtitle" class="text-md text-gray-700 mb-3 text-center">૧૨ ગુણ / દેવ</p>
+                <p class="text-md font-semibold mb-4 text-center">
+                    <span id="arihant-color-word" class="font-bold text-gray-900">સફેદ</span>
+                    <span id="arihant-color-desc">: માતાનું દૂધ, શાંતિનું પ્રતીક.</span>
+                </p>
+                <hr class="my-4 border-gray-300">
+                <ul class="list-disc list-inside space-y-2 text-gray-800 text-left card-content">
+                    <li id="arihant-li-1">રાગ, દ્વેષ, અજ્ઞાનનો નાશ.</li>
+                    <li id="arihant-li-2">ચાર ઘાતી કર્મોનો નાશ.</li>
+                    <li id="arihant-li-3">કેવળજ્ઞાનના સ્વામિ - (અનંતજ્ઞાનના સ્વામિ).</li>
+                    <li id="arihant-li-4">ચતુર્વિધ સંઘની સ્થાપના.</li>
+                    <li id="arihant-li-5">મોક્ષમાર્ગની સ્થાપના.</li>
+                    <li id="arihant-li-6">જગત માતા.</li>
+                    <li id="arihant-li-7">શ્રેષ્ઠ પરોપકાર અને કરૂણાના સ્વામિ.</li>
+                    <li id="arihant-li-8">જિનશાસના રાજા છે.</li>
+                    <li id="arihant-li-9">૧૮ દોષોથી મુક્ત.</li>
+                </ul>
+            </section>
+
+            <section class="bg-white shadow-xl rounded-xl p-6 border-t-8 border-red-500 max-w-2xl mx-auto w-full">
+                <h2 id="siddha-title" class="text-2xl sm:text-3xl font-bold text-red-600 mb-2 text-center card-title">સિધ્ધ ભગવાન</h2>
+                <p id="siddha-subtitle" class="text-md text-gray-700 mb-3 text-center">૮ ગુણ / દેવ</p>
+                <p class="text-md font-semibold mb-4 text-center">
+                    <span id="siddha-color-word" class="font-bold text-red-600">લાલ</span>
+                    <span id="siddha-color-desc">: સાધનારૂપી અગ્નિમાં કર્મોને બાળે.</span>
+                </p>
+                <hr class="my-4 border-gray-300">
+                <ul class="list-disc list-inside space-y-2 text-gray-800 text-left card-content">
+                    <li id="siddha-li-1">આઠેય કર્મોનો નાશ.</li>
+                    <li id="siddha-li-2">શરીર નથી.</li>
+                    <li id="siddha-li-3">જન્મ, જરા અને મરણથી મુક્ત.</li>
+                    <li id="siddha-li-4">સર્વ દુઃખોથી મુક્ત.</li>
+                    <li id="siddha-li-5">અનંત ગુણો (આનંદ) ના ભોક્તા.</li>
+                    <li id="siddha-li-6">સિધ્ધશિલા પર રહે.</li>
+                    <li id="siddha-li-7">ચાર ગતિના દુઃખો (ફેરા) થી મુક્ત.</li>
+                    <li id="siddha-li-8">આપણે સિધ્ધ ભગવાનની જેમ; અરીસા જેવા બનીએ, દ્રષ્ટા / સાક્ષી ભાવ રાખીએ.</li>
+                </ul>
+            </section>
+
+            <section class="bg-white shadow-xl rounded-xl p-6 border-t-8 border-yellow-500 max-w-2xl mx-auto w-full">
+                <h2 id="acharya-title" class="text-2xl sm:text-3xl font-bold text-yellow-600 mb-2 text-center card-title">આચાર્ય ભગવાન</h2>
+                <p id="acharya-subtitle" class="text-md text-gray-700 mb-3 text-center">૩૬ ગુણ / ગુરુ</p>
+                <p class="text-md font-semibold mb-4 text-center">
+                    <span id="acharya-color-word" class="font-bold text-yellow-600">પીળો</span>
+                    <span id="acharya-color-desc">: સૂર્યની જેમ પ્રકાશ (જ્ઞાન) આપે. સોના જેવા શ્રેષ્ઠ.</span>
+                </p>
+                <hr class="my-4 border-gray-300">
+                <ul class="list-disc list-inside space-y-2 text-gray-800 text-left card-content">
+                    <li id="acharya-li-1">અરિહંત ભગવાનની ગેરહાજરીમાં જૈન શાસનનું રક્ષણ કરે અને જૈનશાસનની પ્રભાવના કરે.</li>
+                    <li id="acharya-li-2">પોતે પંચાચારનું પાલન કરે અને બીજા પાસે કરાવે.</li>
+                    <li id="acharya-li-3">સકલ શ્રીસંઘના નાયક છે.</li>
+                    <li id="acharya-li-4">સૂત્રના અર્થની વાચના આપે.</li>
+                </ul>
+            </section>
+
+            <section class="bg-white shadow-xl rounded-xl p-6 border-t-8 border-green-500 max-w-2xl mx-auto w-full">
+                <h2 id="upadhyay-title" class="text-2xl sm:text-3xl font-bold text-green-600 mb-2 text-center card-title">ઉપાધ્યાય ભગવાન</h2>
+                <p id="upadhyay-subtitle" class="text-md text-gray-700 mb-3 text-center">૨૫ ગુણ / ગુરુ</p>
+                <p class="text-md font-semibold mb-4 text-center">
+                    <span id="upadhyay-color-word" class="font-bold text-green-600">લીલો</span>
+                    <span id="upadhyay-color-desc">: લીલા વૃક્ષોની જેમ છાયો/ઠંડક આપે.</span>
+                </p>
+                <hr class="my-4 border-gray-300">
+                <ul class="list-disc list-inside space-y-2 text-gray-800 text-left card-content">
+                    <li id="upadhyay-li-1">૧૧ અંગ અને ૧૨ ઉપાંગ પોતે ભણે અને ભણાવે.</li>
+                    <li id="upadhyay-li-2">સૂત્રની વાચના આપે.</li>
+                    <li id="upadhyay-li-3">વિનયના ભંડાર છે, સાધુઓને વિનીત બનાવે.</li>
+                    <li id="upadhyay-li-4">માતાની જેમ, સાધુના આત્માની, શરીરની અને મનની કાળજી લે.</li>
+                    <li id="upadhyay-li-5">સાધુ ભગવંતોને સાધુપણામાં સ્થિર રાખે.</li>
+                    <li id="upadhyay-li-6">વાચક અથવા પાઠક કહી શકાય.</li>
+                </ul>
+            </section>
+
+            <section class="bg-white shadow-xl rounded-xl p-6 border-t-8 border-slate-700 max-w-2xl mx-auto w-full">
+                <h2 id="sadhu-title" class="text-2xl sm:text-3xl font-bold text-slate-700 mb-2 text-center card-title">સાધુ ભગવાન</h2>
+                <p id="sadhu-subtitle" class="text-md text-gray-700 mb-3 text-center">૨૭ ગુણ / ગુરુ</p>
+                <p class="text-md font-semibold mb-4 text-center">
+                    <span id="sadhu-color-word" class="font-bold text-slate-800">કાળો</span>
+                    <span id="sadhu-color-desc">: કર્મ રૂપી મેલને સાધના વડે દૂર કરે.</span>
+                </p>
+                <hr class="my-4 border-gray-300">
+                <ul class="list-disc list-inside space-y-2 text-gray-800 text-left card-content">
+                    <li id="sadhu-li-1">સહન કરે - સમતા (22 પરિષહ, ઠંડી, ભૂખ, તરસ, માન, અપમાન સહન કરે).</li>
+                    <li id="sadhu-li-2">સહાય કરે - વૈયાવચ્ચ (ગુરૂ, મોટા, માંદા અને નાના સાધુની વૈયાવચ્ચ).</li>
+                    <li id="sadhu-li-3">સાધના કરે - ગુરૂ સમર્પણ (તપ, જપ અને સ્વાધ્યાય).</li>
+                    <li id="sadhu-li-4">જીવન પર્યંત હિંસા, જૂઠ, ચોરી, મૈથુન, પરિગ્રહનો ત્યાગ.</li>
+                    <li id="sadhu-li-5">છ કાય જીવોની રક્ષા.</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Translations object
+        const translations = {
+            'main-title': {
+                gu: 'પંચ પરમેષ્ઠિ',
+                en: 'Pancha Parmeshthi'
+            },
+            // Arihant Bhagwan
+            'arihant-title': {
+                gu: 'અરિહંત ભગવાન',
+                en: 'Arihant Bhagwan'
+            },
+            'arihant-subtitle': {
+                gu: '૧૨ ગુણ / દેવ',
+                en: '12 Qualities / Deva'
+            },
+            'arihant-color-word': {
+                gu: 'સફેદ',
+                en: 'White'
+            },
+            'arihant-color-desc': {
+                gu: ': માતાનું દૂધ, શાંતિનું પ્રતીક.',
+                en: ': Symbol of mother\'s milk, peace.'
+            },
+            'arihant-li-1': {
+                gu: 'રાગ, દ્વેષ, અજ્ઞાનનો નાશ.',
+                en: 'Destruction of attachment (raga), aversion (dvesha), and ignorance (ajnana).'
+            },
+            'arihant-li-2': {
+                gu: 'ચાર ઘાતી કર્મોનો નાશ.',
+                en: 'Destruction of four destructive (ghati) karmas.'
+            },
+            'arihant-li-3': {
+                gu: 'કેવળજ્ઞાનના સ્વામિ - (અનંતજ્ઞાનના સ્વામિ).',
+                en: 'Master of absolute knowledge (Kevaljnana) - (Master of infinite knowledge).'
+            },
+            'arihant-li-4': {
+                gu: 'ચતુર્વિધ સંઘની સ્થાપના.',
+                en: 'Establishment of the four-fold Sangha (community).'
+            },
+            'arihant-li-5': {
+                gu: 'મોક્ષમાર્ગની સ્થાપના.',
+                en: 'Establishment of the path to liberation (Moksha Marga).'
+            },
+            'arihant-li-6': {
+                gu: 'જગત માતા.',
+                en: 'Mother of the world.'
+            },
+            'arihant-li-7': {
+                gu: 'શ્રેષ્ઠ પરોપકાર અને કરૂણાના સ્વામિ.',
+                en: 'Master of supreme benevolence and compassion.'
+            },
+            'arihant-li-8': {
+                gu: 'જિનશાસના રાજા છે.',
+                en: 'King of the Jina\'s teachings (Jinashasana).'
+            },
+            'arihant-li-9': {
+                gu: '૧૮ દોષોથી મુક્ત.',
+                en: 'Free from 18 imperfections (doshas).'
+            },
+            // Siddha Bhagwan
+            'siddha-title': {
+                gu: 'સિધ્ધ ભગવાન',
+                en: 'Siddha Bhagwan'
+            },
+            'siddha-subtitle': {
+                gu: '૮ ગુણ / દેવ',
+                en: '8 Qualities / Deva'
+            },
+            'siddha-color-word': {
+                gu: 'લાલ',
+                en: 'Red'
+            },
+            'siddha-color-desc': {
+                gu: ': સાધનારૂપી અગ્નિમાં કર્મોને બાળે.',
+                en: ': Burns karmas in the fire of spiritual practice.'
+            },
+            'siddha-li-1': {
+                gu: 'આઠેય કર્મોનો નાશ.',
+                en: 'Destruction of all eight karmas.'
+            },
+            'siddha-li-2': {
+                gu: 'શરીર નથી.',
+                en: 'Without a physical body.'
+            },
+            'siddha-li-3': {
+                gu: 'જન્મ, જરા અને મરણથી મુક્ત.',
+                en: 'Free from birth, old age, and death.'
+            },
+            'siddha-li-4': {
+                gu: 'સર્વ દુઃખોથી મુક્ત.',
+                en: 'Free from all sorrows.'
+            },
+            'siddha-li-5': {
+                gu: 'અનંત ગુણો (આનંદ) ના ભોક્તા.',
+                en: 'Enjoyer of infinite qualities (bliss).'
+            },
+            'siddha-li-6': {
+                gu: 'સિધ્ધશિલા પર રહે.',
+                en: 'Resides on Siddhashila (abode of the liberated).'
+            },
+            'siddha-li-7': {
+                gu: 'ચાર ગતિના દુઃખો (ફેરા) થી મુક્ત.',
+                en: 'Free from the sorrows (cycles) of the four states of existence (gati).'
+            },
+            'siddha-li-8': {
+                gu: 'આપણે સિધ્ધ ભગવાનની જેમ; અરીસા જેવા બનીએ, દ્રષ્ટા / સાક્ષી ભાવ રાખીએ.',
+                en: 'Like Siddha Bhagwan, we should become like a mirror, maintaining a witness/observer attitude.'
+            },
+            // Acharya Bhagwan
+            'acharya-title': {
+                gu: 'આચાર્ય ભગવાન',
+                en: 'Acharya Bhagwan'
+            },
+            'acharya-subtitle': {
+                gu: '૩૬ ગુણ / ગુરુ',
+                en: '36 Qualities / Guru'
+            },
+            'acharya-color-word': {
+                gu: 'પીળો',
+                en: 'Yellow'
+            },
+            'acharya-color-desc': {
+                gu: ': સૂર્યની જેમ પ્રકાશ (જ્ઞાન) આપે. સોના જેવા શ્રેષ્ઠ.',
+                en: ': Radiates light (knowledge) like the sun. Excellent like gold.'
+            },
+            'acharya-li-1': {
+                gu: 'અરિહંત ભગવાનની ગેરહાજરીમાં જૈન શાસનનું રક્ષણ કરે અને જૈનશાસનની પ્રભાવના કરે.',
+                en: 'In the absence of Arihant Bhagwan, protects the Jain Shasana (teachings) and promotes its glory.'
+            },
+            'acharya-li-2': {
+                gu: 'પોતે પંચાચારનું પાલન કરે અને બીજા પાસે કરાવે.',
+                en: 'Observes the five great vows (Panchachara) himself and inspires others to do so.'
+            },
+            'acharya-li-3': {
+                gu: 'સકલ શ્રીસંઘના નાયક છે.',
+                en: 'Leader of the entire Shri Sangha (community).'
+            },
+            'acharya-li-4': {
+                gu: 'સૂત્રના અર્થની વાચના આપે.',
+                en: 'Gives discourses on the meaning of the scriptures (sutras).'
+            },
+            // Upadhyay Bhagwan
+            'upadhyay-title': {
+                gu: 'ઉપાધ્યાય ભગવાન',
+                en: 'Upadhyay Bhagwan'
+            },
+            'upadhyay-subtitle': {
+                gu: '૨૫ ગુણ / ગુરુ',
+                en: '25 Qualities / Guru'
+            },
+            'upadhyay-color-word': {
+                gu: 'લીલો',
+                en: 'Green'
+            },
+            'upadhyay-color-desc': {
+                gu: ': લીલા વૃક્ષોની જેમ છાયો/ઠંડક આપે.',
+                en: ': Provides shade/coolness like green trees.'
+            },
+            'upadhyay-li-1': {
+                gu: '૧૧ અંગ અને ૧૨ ઉપાંગ પોતે ભણે અને ભણાવે.',
+                en: 'Studies and teaches the 11 Angas and 12 Upangas (Jain scriptures).'
+            },
+            'upadhyay-li-2': {
+                gu: 'સૂત્રની વાચના આપે.',
+                en: 'Gives discourses on the scriptures (sutras).'
+            },
+            'upadhyay-li-3': {
+                gu: 'વિનયના ભંડાર છે, સાધુઓને વિનીત બનાવે.',
+                en: 'Is a repository of humility, makes monks humble (vineet).'
+            },
+            'upadhyay-li-4': {
+                gu: 'માતાની જેમ, સાધુના આત્માની, શરીરની અને મનની કાળજી લે.',
+                en: 'Like a mother, takes care of the monk\'s soul, body, and mind.'
+            },
+            'upadhyay-li-5': {
+                gu: 'સાધુ ભગવંતોને સાધુપણામાં સ્થિર રાખે.',
+                en: 'Keeps the monks stable in their monkhood (sadhupana).'
+            },
+            'upadhyay-li-6': {
+                gu: 'વાચક અથવા પાઠક કહી શકાય.',
+                en: 'Can be called a reader or preceptor (Vachak or Pathak).'
+            },
+            // Sadhu Bhagwan
+            'sadhu-title': {
+                gu: 'સાધુ ભગવાન',
+                en: 'Sadhu Bhagwan'
+            },
+            'sadhu-subtitle': {
+                gu: '૨૭ ગુણ / ગુરુ',
+                en: '27 Qualities / Guru'
+            },
+            'sadhu-color-word': {
+                gu: 'કાળો',
+                en: 'Black'
+            },
+            'sadhu-color-desc': {
+                gu: ': કર્મ રૂપી મેલને સાધના વડે દૂર કરે.',
+                en: ': Removes the dirt of karma through spiritual practice.'
+            },
+            'sadhu-li-1': {
+                gu: 'સહન કરે - સમતા (22 પરિષહ, ઠંડી, ભૂખ, તરસ, માન, અપમાન સહન કરે).',
+                en: 'Endures - equanimity (Samata) (tolerates 22 hardships (parisaha), cold, hunger, thirst, respect, disrespect).'
+            },
+            'sadhu-li-2': {
+                gu: 'સહાય કરે - વૈયાવચ્ચ (ગુરૂ, મોટા, માંદા અને નાના સાધુની વૈયાવચ્ચ).',
+                en: 'Helps - service (Vaiyavachch) (serves Guru, elder, sick, and young monks).'
+            },
+            'sadhu-li-3': {
+                gu: 'સાધના કરે - ગુરૂ સમર્પણ (તપ, જપ અને સ્વાધ્યાય).',
+                en: 'Practices - dedication to Guru (Guru Samarpan) (austerity (tapa), chanting (japa), and self-study (swadhyaya)).'
+            },
+            'sadhu-li-4': {
+                gu: 'જીવન પર્યંત હિંસા, જૂઠ, ચોરી, મૈથુન, પરિગ્રહનો ત્યાગ.',
+                en: 'Lifelong renunciation of violence (himsa), falsehood, theft (chori), sexual activity (maithun), and possessiveness (parigraha).'
+            },
+            'sadhu-li-5': {
+                gu: 'છ કાય જીવોની રક્ષા.',
+                en: 'Protection of six forms of life (Chha Kaya Jiva).'
+            }
+        };
+
+        // Get references to buttons
+        const btnGu = document.getElementById('btn-gu');
+        const btnEn = document.getElementById('btn-en');
+        const htmlTag = document.documentElement; // Get the <html> tag
+
+        // Function to set the language
+        function setLanguage(lang) {
+            // Iterate through the translations object
+            for (const id in translations) {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = translations[id][lang];
+                }
+            }
+            // Update html lang attribute
+            htmlTag.lang = lang;
+
+            // Update button styles
+            if (lang === 'gu') {
+                btnGu.classList.remove('lang-btn-inactive');
+                btnGu.classList.add('lang-btn-active');
+                btnEn.classList.remove('lang-btn-active');
+                btnEn.classList.add('lang-btn-inactive');
+            } else {
+                btnEn.classList.remove('lang-btn-inactive');
+                btnEn.classList.add('lang-btn-active');
+                btnGu.classList.remove('lang-btn-active');
+                btnGu.classList.add('lang-btn-inactive');
+            }
+
+            // Store preference in localStorage
+            localStorage.setItem('preferredLanguage', lang);
+            console.log(`Language changed to ${lang}. Preference saved.`);
+        }
+
+        // Event listeners for buttons
+        btnGu.addEventListener('click', () => setLanguage('gu'));
+        btnEn.addEventListener('click', () => setLanguage('en'));
+
+        // On page load, check for stored language preference
+        document.addEventListener('DOMContentLoaded', () => {
+            const preferredLanguage = localStorage.getItem('preferredLanguage');
+            if (preferredLanguage) {
+                setLanguage(preferredLanguage);
+                console.log(`Loaded preferred language: ${preferredLanguage}`);
+            } else {
+                setLanguage('gu'); // Default to Gujarati
+                console.log('No preferred language found, defaulting to Gujarati.');
+            }
+            console.log('પંચ પરમેષ્ઠિ પૃષ્ઠ સંપૂર્ણપણે લોડ થઈ ગયું છે અને ભાષા સ્વિચિંગ સક્ષમ છે.');
+        });
+    </script>
+</body>
+</html>

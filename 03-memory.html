@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panch Parmeshthi Memory Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans Gujarati', sans-serif; /* Inter as primary, Noto Sans Gujarati for Gujarati text */
+            touch-action: manipulation; /* Prevents double-tap zoom on mobile */
+        }
+        .card {
+            perspective: 1000px;
+            aspect-ratio: 3/4;
+            cursor: pointer;
+        }
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            border-radius: 0.5rem; /* Tailwind: rounded-lg */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Tailwind: shadow-md */
+        }
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        .card.matched .card-inner {
+            border: 2px solid #22c55e; /* Tailwind: border-green-500 */
+        }
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem; /* Tailwind: rounded-lg */
+            font-size: clamp(0.75rem, 4vw, 1.25rem); /* Responsive font size */
+            padding: 0.25rem;
+            box-sizing: border-box;
+        }
+        .card-front {
+            background-color: #60a5fa; /* Tailwind: bg-blue-400 */
+            color: white;
+            font-size: 2rem; /* Larger font for the symbol */
+        }
+        .card-back {
+            background-color: #fde047; /* Tailwind: bg-yellow-300 */
+            color: #1f2937; /* Tailwind: text-gray-800 */
+            transform: rotateY(180deg);
+            font-weight: bold;
+        }
+        #game-board {
+            display: grid;
+            gap: 0.5rem; /* Tailwind: gap-2 */
+        }
+        @media (max-width: 400px) {
+            #game-board {
+                gap: 0.25rem; /* Tailwind: gap-1 */
+            }
+            .card-back {
+                 font-size: clamp(0.6rem, 3.5vw, 1rem);
+            }
+        }
+        .lang-button.active {
+            background-color: #fbbf24; /* amber-400 */
+            color: #78350f; /* amber-900 */
+            font-weight: bold;
+        }
+        /* Basic styling for instructions, can be enhanced */
+        #instructions-area {
+            background-color: #fffbeb; /* amber-50 */
+            border: 1px solid #fcd34d; /* amber-300 */
+            padding: 0.75rem; /* p-3 */
+            border-radius: 0.5rem; /* rounded-lg */
+            margin-bottom: 1rem; /* mb-4 */
+            font-size: 0.875rem; /* text-sm */
+            line-height: 1.5; /* leading-relaxed */
+        }
+        #instructions-area h3 {
+            font-weight: bold;
+            color: #92400e; /* amber-700 */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+        #instructions-area ul {
+            list-style-type: disc;
+            padding-left: 1.25rem; /* pl-5 */
+        }
+         #instructions-area.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-orange-200 via-amber-100 to-yellow-200 min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 selection:bg-amber-500 selection:text-white">
+
+    <div class="w-full max-w-2xl mx-auto bg-white/80 backdrop-blur-md p-3 sm:p-6 rounded-xl shadow-2xl">
+        <div class="mb-4 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
+            <div class="flex space-x-2">
+                <button id="lang-gu" class="lang-button px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-amber-200 hover:bg-amber-300 text-amber-800 rounded-md transition-colors">ગુજરાતી</button>
+                <button id="lang-en" class="lang-button px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-amber-200 hover:bg-amber-300 text-amber-800 rounded-md transition-colors">English</button>
+            </div>
+            <button id="toggle-instructions" class="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-sky-200 hover:bg-sky-300 text-sky-800 rounded-md transition-colors">
+                <span data-translate-key="showInstructions">Show Instructions</span>
+            </button>
+        </div>
+
+        <div id="instructions-area" class="hidden">
+            <h3 data-translate-key="instructionsTitle">Game Instructions</h3>
+            <ul data-translate-key="instructionsList">
+                <li>Click on two cards to flip them over.</li>
+                <li>If the names on the cards match, they will stay open.</li>
+                <li>If they don't match, they will flip back.</li>
+                <li>The goal is to find all 10 pairs of matching names.</li>
+                <li>Try to find all pairs in the minimum number of chances.</li>
+            </ul>
+        </div>
+
+        <h1 id="game-title" class="text-2xl sm:text-3xl font-bold text-center text-amber-700 mb-4" data-translate-key="gameTitle">પંચ પરમેષ્ઠિ સ્મૃતિ રમત</h1>
+        
+        <div class="flex flex-col sm:flex-row justify-around items-center mb-4 text-center space-y-2 sm:space-y-0">
+            <p class="text-lg text-slate-700"><span data-translate-key="chancesLabel">પ્રયાસો</span>: <span id="chances-count" class="font-bold text-amber-600">0</span></p>
+            <p class="text-lg text-slate-700"><span data-translate-key="pairsLabel">જોડી મળી</span>: <span id="pairs-count" class="font-bold text-amber-600">0</span> / 10</p>
+        </div>
+
+        <div id="message-area" class="text-center font-semibold mb-4 h-6"></div>
+
+        <div id="game-board" class="grid grid-cols-4 sm:grid-cols-5 gap-2 sm:gap-3">
+            </div>
+
+        <button id="reset-button" class="mt-6 w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-4 rounded-lg shadow-md transition duration-150 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-opacity-75" data-translate-key="resetButton">
+            રમત ફરી શરૂ કરો
+        </button>
+    </div>
+
+    <script>
+        // --- Translations ---
+        const translations = {
+            en: {
+                gameTitle: "Panch Parmeshthi Memory Game",
+                chancesLabel: "Chances",
+                pairsLabel: "Pairs Found",
+                resetButton: "Restart Game",
+                cardNames: ["Arihant", "Siddha", "Acharya", "Upadhyay", "Sadhu"],
+                messageMatch: "Great! Pair found!",
+                messageNoMatch: "Try again.",
+                messageWin: (chances) => `Congratulations! You won in ${chances} chances!`,
+                messageNewGame: "New game started!",
+                messageClickToStart: "Click a card to start the game!",
+                showInstructions: "Show Instructions",
+                hideInstructions: "Hide Instructions",
+                instructionsTitle: "Game Instructions",
+                instructionsList: `
+                    <li>Click on two cards to flip them over.</li>
+                    <li>If the names on the cards match, they will stay open.</li>
+                    <li>If they don't match, they will flip back.</li>
+                    <li>The goal is to find all 10 pairs of matching names.</li>
+                    <li>Try to find all pairs in the minimum number of chances.</li>
+                `
+            },
+            gu: {
+                gameTitle: "પંચ પરમેષ્ઠિ સ્મૃતિ રમત",
+                chancesLabel: "પ્રયાસો",
+                pairsLabel: "જોડી મળી",
+                resetButton: "રમત ફરી શરૂ કરો",
+                cardNames: ["અરિહંત", "સિદ્ધ", "આચાર્ય", "ઉપાધ્યાય", "સાધુ"],
+                messageMatch: "સરસ! જોડી મળી ગઈ!",
+                messageNoMatch: "ફરી પ્રયાસ કરો.",
+                messageWin: (chances) => `અભિનંદન! તમે ${chances} પ્રયાસોમાં રમત જીતી ગયા!`,
+                messageNewGame: "નવી રમત શરૂ થઈ!",
+                messageClickToStart: "રમત શરૂ કરવા માટે કાર્ડ પર ક્લિક કરો!",
+                showInstructions: "સૂચનાઓ બતાવો",
+                hideInstructions: "સૂચનાઓ છુપાવો",
+                instructionsTitle: "રમત સૂચનાઓ",
+                instructionsList: `
+                    <li>બે કાર્ડ પર ક્લિક કરીને તેમને ફ્લિપ કરો.</li>
+                    <li>જો કાર્ડ પરના નામો મેળ ખાય છે, તો તે ખુલ્લા રહેશે.</li>
+                    <li>જો મેળ ન ખાય, તો તે પાછા ફ્લિપ થશે.</li>
+                    <li>ધ્યેય એ છે કે તમામ 10 જોડીઓ શોધવી.</li>
+                    <li>ઓછામાં ઓછા પ્રયાસોમાં બધી જોડીઓ શોધવાનો પ્રયાસ કરો.</li>
+                `
+            }
+        };
+        let currentLanguage = 'gu'; // Default language
+
+        // --- Game Configuration ---
+        const totalPairs = 10;
+        const cardBackSymbol = "ૐ";
+
+        // --- DOM Elements ---
+        const gameBoard = document.getElementById('game-board');
+        const chancesCountDisplay = document.getElementById('chances-count');
+        const pairsCountDisplay = document.getElementById('pairs-count');
+        const messageArea = document.getElementById('message-area');
+        const resetButton = document.getElementById('reset-button');
+        const langGuButton = document.getElementById('lang-gu');
+        const langEnButton = document.getElementById('lang-en');
+        const toggleInstructionsButton = document.getElementById('toggle-instructions');
+        const instructionsArea = document.getElementById('instructions-area');
+
+        // --- Game State Variables ---
+        let cards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let chancesTaken = 0;
+        let lockBoard = false;
+
+        // --- Language and UI Update Functions ---
+        function updateUIText() {
+            document.querySelectorAll('[data-translate-key]').forEach(element => {
+                const key = element.dataset.translateKey;
+                if (translations[currentLanguage] && translations[currentLanguage][key]) {
+                    if (key === 'instructionsList') {
+                        element.innerHTML = translations[currentLanguage][key];
+                    } else {
+                        element.textContent = translations[currentLanguage][key];
+                    }
+                }
+            });
+            // Update button active states
+            langGuButton.classList.toggle('active', currentLanguage === 'gu');
+            langEnButton.classList.toggle('active', currentLanguage === 'en');
+
+            // Update font based on language
+            if (currentLanguage === 'gu') {
+                document.body.style.fontFamily = "'Noto Sans Gujarati', 'Inter', sans-serif";
+            } else {
+                document.body.style.fontFamily = "'Inter', 'Noto Sans Gujarati', sans-serif";
+            }
+        }
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            updateUIText();
+            resetGame(); // Reset game when language changes to re-render cards with new names
+        }
+
+        // --- Game Logic ---
+        function createCardValues() {
+            const values = [];
+            const currentCardNames = translations[currentLanguage].cardNames;
+            currentCardNames.forEach(name => {
+                for (let i = 0; i < 4; i++) {
+                    values.push(name);
+                }
+            });
+            return values;
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function createBoard() {
+            gameBoard.innerHTML = '';
+            cards = [];
+            const cardValues = shuffle(createCardValues());
+
+            cardValues.forEach((value, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.classList.add('card');
+                cardElement.dataset.id = index;
+                cardElement.dataset.value = value;
+
+                cardElement.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-front bg-amber-400 hover:bg-amber-500 transition-colors duration-200">
+                           ${cardBackSymbol}
+                        </div>
+                        <div class="card-back bg-sky-300">
+                            ${value}
+                        </div>
+                    </div>
+                `;
+                cardElement.addEventListener('click', handleCardClick);
+                gameBoard.appendChild(cardElement);
+                cards.push({ value: value, id: index, element: cardElement, isMatched: false });
+            });
+        }
+        
+        function handleCardClick(event) {
+            if (lockBoard) return;
+            const clickedCardElement = event.currentTarget;
+            const clickedCardId = parseInt(clickedCardElement.dataset.id);
+            const clickedCard = cards.find(card => card.id === clickedCardId);
+
+            if (!clickedCard || clickedCard.isMatched || flippedCards.includes(clickedCard)) {
+                return;
+            }
+
+            flipCard(clickedCard);
+            flippedCards.push(clickedCard);
+
+            if (flippedCards.length === 2) {
+                lockBoard = true;
+                chancesTaken++;
+                updateGameStats();
+                checkForMatch();
+            }
+        }
+
+        function flipCard(card) {
+            card.element.classList.add('flipped');
+        }
+
+        function unflipCards() {
+            flippedCards.forEach(card => {
+                if (!card.isMatched) {
+                    card.element.classList.remove('flipped');
+                }
+            });
+            flippedCards = [];
+            lockBoard = false;
+        }
+
+        function checkForMatch() {
+            const [card1, card2] = flippedCards;
+            if (card1.value === card2.value) {
+                card1.isMatched = true;
+                card2.isMatched = true;
+                card1.element.classList.add('matched');
+                card2.element.classList.add('matched');
+                
+                matchedPairs++;
+                updateGameStats();
+                displayMessage(translations[currentLanguage].messageMatch, "success");
+
+                card1.element.removeEventListener('click', handleCardClick);
+                card2.element.removeEventListener('click', handleCardClick);
+
+                flippedCards = [];
+                lockBoard = false;
+
+                if (matchedPairs === totalPairs) {
+                    setTimeout(() => {
+                        displayMessage(translations[currentLanguage].messageWin(chancesTaken), "win");
+                    }, 500);
+                }
+            } else {
+                displayMessage(translations[currentLanguage].messageNoMatch, "error");
+                setTimeout(() => {
+                    unflipCards();
+                    displayMessage("", "clear");
+                }, 1200);
+            }
+        }
+
+        function updateGameStats() {
+            chancesCountDisplay.textContent = chancesTaken;
+            pairsCountDisplay.textContent = matchedPairs;
+        }
+
+        function displayMessage(text, type) {
+            messageArea.textContent = text;
+            messageArea.classList.remove('text-green-600', 'text-red-500', 'text-blue-600');
+            if (type === "success") {
+                messageArea.classList.add('text-green-600');
+            } else if (type === "error") {
+                messageArea.classList.add('text-red-500');
+            } else if (type === "win") {
+                messageArea.classList.add('text-blue-600', 'text-xl', 'font-bold');
+            } else {
+                 messageArea.classList.add('text-slate-700'); // Neutral message color
+            }
+        }
+
+        function resetGame() {
+            matchedPairs = 0;
+            chancesTaken = 0;
+            flippedCards = [];
+            lockBoard = false;
+            updateGameStats();
+            createBoard(); // This will re-shuffle and re-create cards with current language
+            displayMessage(translations[currentLanguage].messageNewGame, "neutral");
+            setTimeout(() => displayMessage("", "clear"), 1500);
+        }
+
+        function toggleInstructionsVisibility() {
+            instructionsArea.classList.toggle('hidden');
+            const toggleButtonTextKey = instructionsArea.classList.contains('hidden') ? 'showInstructions' : 'hideInstructions';
+            document.querySelector('#toggle-instructions span').textContent = translations[currentLanguage][toggleButtonTextKey];
+
+        }
+
+        // --- Initialize Game ---
+        langGuButton.addEventListener('click', () => setLanguage('gu'));
+        langEnButton.addEventListener('click', () => setLanguage('en'));
+        resetButton.addEventListener('click', resetGame);
+        toggleInstructionsButton.addEventListener('click', toggleInstructionsVisibility);
+        
+        // Initial UI setup
+        setLanguage(currentLanguage); // Set initial language and render UI text
+        // createBoard(); // Called within setLanguage via resetGame
+        displayMessage(translations[currentLanguage].messageClickToStart, "neutral");
+
+    </script>
+
+</body>
+</html>

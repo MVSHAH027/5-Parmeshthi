@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>પંચ પરમેષ્ઠી : મને ઓળખો</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Vadodara:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Hind Vadodara', 'Inter', sans-serif;
+            touch-action: manipulation;
+        }
+        .game-instructions {
+            background-color: #e0f2fe; /* light blue background */
+            border: 1px solid #bae6fd; /* slightly darker blue border */
+            padding: 12px; /* p-3 */
+            margin-bottom: 16px; /* mb-4 */
+            border-radius: 8px; /* rounded-lg */
+            font-size: 0.875rem; /* text-sm */
+            line-height: 1.6;
+        }
+        .game-instructions h2 {
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 700; /* font-bold */
+            color: #0c4a6e; /* text-sky-800 */
+            margin-bottom: 8px; /* mb-2 */
+        }
+        .game-instructions ul {
+            list-style-type: disc;
+            padding-left: 20px; /* pl-5 */
+        }
+        .game-instructions li {
+            margin-bottom: 4px; /* mb-1 */
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Changed from 5 to 3 */
+            grid-template-rows: repeat(3, 1fr);    /* Changed from 4 to 3 */
+            gap: 8px;
+            aspect-ratio: 1 / 1; /* Changed from 5 / 4 to 1 / 1 for a square grid */
+            max-width: 90vw;
+            margin: auto;
+        }
+        .grid-cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4px;
+            border: 1px solid #d1d5db; /* gray-300 */
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            color: #047857; /* dark green - text-green-700 */
+            font-weight: 700; /* bold */
+            font-size: 0.75rem;
+            line-height: 1.25;
+            min-height: 60px; /* Ensure a minimum height for cells */
+            word-break: break-word; /* Allow long words to break */
+            overflow-wrap: break-word; /* Ensure words wrap */
+        }
+        @media (min-width: 400px) {
+            .grid-cell {
+                font-size: 0.8rem;
+                 padding: 5px;
+            }
+        }
+        @media (min-width: 640px) { /* sm breakpoint */
+            .grid-cell {
+                font-size: 0.9rem;
+                padding: 6px;
+            }
+        }
+        .selected-cell {
+            background-color: #60a5fa; /* blue-400 */
+            color: white !important;
+            border-color: #2563eb; /* blue-600 */
+            transform: scale(1.05);
+        }
+        .correct-guess {
+            background-color: #34d399 !important; /* emerald-400 */
+            color: white !important;
+            border-color: #059669 !important; /* emerald-600 */
+            cursor: default;
+            opacity: 0.7;
+        }
+        .incorrect-flash {
+            animation: flash-red 0.5s;
+        }
+        @keyframes flash-red {
+            0%, 100% { background-color: #ef4444; color: white !important; } /* red-500 */
+            50% { background-color: inherit; color: #047857; } /* Revert to original grid cell color */
+        }
+
+        .parmeshthi-btn {
+            transition: all 0.2s ease-in-out;
+            font-size: 0.75rem;
+            padding: 8px 10px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-md */
+        }
+         @media (min-width: 640px) { /* sm breakpoint */
+            .parmeshthi-btn {
+                font-size: 0.85rem;
+                padding: 10px 14px;
+            }
+        }
+        .disabled-cell {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        .message-box {
+            min-height: 2.5em; /* Ensure space for messages */
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        /* Control Button Styling */
+        .control-button {
+            @apply text-red-700 font-bold py-2 px-4 rounded-lg text-base shadow-md transition-colors duration-150 ease-in-out;
+        }
+        .control-button-gu {
+            @apply bg-orange-500 hover:bg-orange-600;
+        }
+        .control-button-en {
+            @apply bg-teal-500 hover:bg-teal-600;
+        }
+        .control-button-instr {
+            @apply bg-indigo-500 hover:bg-indigo-600;
+        }
+        .control-button.active {
+            @apply ring-2 ring-offset-2 ring-offset-white;
+        }
+        .control-button-gu.active {
+            @apply ring-orange-700;
+        }
+        .control-button-en.active {
+            @apply ring-teal-700;
+        }
+
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-2xl bg-white p-4 sm:p-6 rounded-xl shadow-2xl">
+        <header class="text-center mb-2">
+            <h1 id="game-title" class="text-2xl sm:text-3xl font-bold text-blue-600">પંચ પરમેષ્ઠી : મને ઓળખો</h1>
+        </header>
+
+        <div id="controls-area" class="flex flex-wrap justify-center items-center gap-3 my-4">
+            <button id="lang-gu-btn" class="control-button control-button-gu">ગુજરાતી</button>
+            <button id="lang-en-btn" class="control-button control-button-en">English</button>
+            <button id="toggle-instructions-btn" class="control-button control-button-instr">સૂચનાઓ છુપાવો</button>
+        </div>
+
+        <div id="game-instructions" class="game-instructions">
+            <h2 id="instructions-title">રમત કેવી રીતે રમવી:</h2>
+            <ul id="instructions-list">
+                {/* Instruction items will be populated by JavaScript */}
+            </ul>
+        </div>
+
+        <div class="flex justify-between items-center mb-3 text-sm sm:text-base">
+            <div><span id="score-label">સ્કોર</span>: <span id="score" class="font-bold text-xl text-green-600">0</span></div>
+            <div><span id="remaining-label">બાકી</span>: <span id="remaining" class="font-bold text-xl text-red-600">9</span></div>
+        </div>
+
+        <div id="message-area" class="message-box text-center font-semibold mb-3 text-sm sm:text-base">&nbsp;</div>
+
+        <div id="game-grid" class="game-grid mb-4">
+            {/* Grid cells will be populated by JavaScript */}
+        </div>
+
+        <div id="parmeshthi-buttons" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 mb-4">
+            {/* Parmeshthi buttons will be populated by JavaScript */}
+        </div>
+
+        <button id="new-game-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out">
+            નવી રમત
+        </button>
+    </div>
+
+    <script>
+        // --- Translations and Game Data ---
+        const translations = {
+            gu: {
+                htmlLang: "gu",
+                fontFamily: "'Hind Vadodara', 'Inter', sans-serif",
+                title: "પંચ પરમેષ્ઠી : મને ઓળખો",
+                instructionsTitle: "રમત કેવી રીતે રમવી:",
+                instructionsList: [
+                    "નીચે આપેલા ૩x૩ ગ્રીડમાં પંચ પરમેષ્ઠીના વિવિધ ગુણધર્મો બતાવવામાં આવ્યા છે.", // Changed from ૪x૫ to ૩x૩
+                    "કોઈપણ એક ગુણધર્મ પર ક્લિક કરીને તેને પસંદ કરો.",
+                    "પછી, તે ગુણધર્મ જે પરમેષ્ઠીનો હોય તે પરમેષ્ઠીના નામવાળા બટન પર ક્લિક કરો.",
+                    "તમારો જવાબ સાચો હશે તો સ્કોર વધશે અને તે ગુણધર્મ ગ્રીડમાંથી આછો થઈ જશે.",
+                    "જો જવાબ ખોટો હશે, તો તમને સૂચના મળશે.",
+                    "બધા ૯ ગુણધર્મોને સાચા પરમેષ્ઠી સાથે મેચ કરવાનો પ્રયાસ કરો.", // Changed from ૨૦ to ૯
+                    "\"નવી રમત\" બટન પર ક્લિક કરીને તમે ગમે ત્યારે રમત ફરીથી શરૂ કરી શકો છો."
+                ],
+                scoreLabel: "સ્કોર:",
+                remainingLabel: "બાકી:",
+                newGameButton: "નવી રમત",
+                selectPropertyFirstMessage: "પહેલા ગુણધર્મ પસંદ કરો, પછી તેના પરમેષ્ઠી.",
+                selectParmeshthiMessage: "હવે પરમેષ્ઠી પસંદ કરો.",
+                pleaseSelectPropertyMessage: "કૃપા કરીને પહેલા ગ્રીડમાંથી ગુણધર્મ પસંદ કરો!",
+                correctMessage: "સાચું!",
+                incorrectMessageKey: "incorrectMessage", // Key for dynamic incorrect message
+                congratulationsMessageKey: "congratulationsMessage", // Key for dynamic congratulations message
+                showInstructions: "સૂચનાઓ બતાવો",
+                hideInstructions: "સૂચનાઓ છુપાવો",
+                parmeshthis: [ // Same Parmeshthi data
+                    { name: "અરિહંત ભગવાન", properties: ["૧૨ ગુણ", "સફેદ", "કેવળજ્ઞાન", "શાંતિનું પ્રતીક", "ઘાતી કર્મોનો નાશ", "મોક્ષમાર્ગ પ્રવર્તક", "૧૮ દોષ રહિત"], buttonClass: "bg-gray-200 hover:bg-gray-300 text-black border-gray-400" },
+                    { name: "સિદ્ધ ભગવાન", properties: ["૮ ગુણ", "લાલ", "આઠેય કર્મોનો નાશ", "સિદ્ધશિલા નિવાસી", "જન્મ, જરા, મરણ રહિત", "શાશ્વત દ્રષ્ટા", "પરમ સાક્ષી"], buttonClass: "bg-red-500 hover:bg-red-600 text-white border-red-700" },
+                    { name: "આચાર્ય ભગવાન", properties: ["૩૬ ગુણ", "પીળો", "સૂર્યની જેમ તેજસ્વી", "સંઘના નાયક", "પંચાચાર પાલક", "જૈન શાસન રક્ષક", "ધર્મ પ્રભાવનાકાર"], buttonClass: "bg-yellow-400 hover:bg-yellow-500 text-black border-yellow-600" },
+                    { name: "ઉપાધ્યાય ભગવાન", properties: ["૨૫ ગુણ", "લીલો", "જ્ઞાનરૂપી વૃક્ષો સમાન", "અંગ-ઉપાંગના જ્ઞાતા", "સૂત્રના વાચક", "જ્ઞાનદાન કરનાર", "સ્વ-પર હિતકારી"], buttonClass: "bg-green-500 hover:bg-green-600 text-white border-green-700" },
+                    { name: "સાધુ ભગવાન", properties: ["૨૭ ગુણ", "કાળો (શ્યામ)", "સમતા ભાવના", "૨૨ પરિષહ સહન", "વૈયાવચ્ચ કરનાર", "હિંસા, જૂઠ, ચોરી ત્યાગી", "છ કાય જીવ રક્ષક"], buttonClass: "bg-gray-700 hover:bg-gray-800 text-white border-gray-900" }
+                ]
+            },
+            en: {
+                htmlLang: "en",
+                fontFamily: "'Inter', 'Hind Vadodara', sans-serif",
+                title: "Punch Paramasthi: Identify Me",
+                instructionsTitle: "How to Play:",
+                instructionsList: [
+                    "Various properties of Panch Parmeshthi are shown in the 3x3 grid below.", // Changed from 4x5 to 3x3
+                    "Select a property by clicking on it.",
+                    "Then, click the button with the name of the Parmeshthi to whom that property belongs.",
+                    "If your answer is correct, your score will increase, and the property will fade from the grid.",
+                    "If the answer is incorrect, you will receive a notification.",
+                    "Try to match all 9 properties with the correct Parmeshthi.", // Changed from 20 to 9
+                    "You can restart the game anytime by clicking the \"New Game\" button."
+                ],
+                scoreLabel: "Score:",
+                remainingLabel: "Remaining:",
+                newGameButton: "New Game",
+                selectPropertyFirstMessage: "First select a property, then its Parmeshthi.",
+                selectParmeshthiMessage: "Now select the Parmeshthi.",
+                pleaseSelectPropertyMessage: "Please select a property from the grid first!",
+                correctMessage: "Correct!",
+                incorrectMessageKey: "incorrectMessage",
+                congratulationsMessageKey: "congratulationsMessage",
+                showInstructions: "Show Instructions",
+                hideInstructions: "Hide Instructions",
+                parmeshthis: [ // Same Parmeshthi data
+                    { name: "Arihant Bhagwan", properties: ["12 Virtues", "White Color", "Omniscience", "Symbol of Peace", "Destroyer of Ghati Karmas", "Propagator of Moksha Path", "Free from 18 Faults"], buttonClass: "bg-gray-200 hover:bg-gray-300 text-black border-gray-400" },
+                    { name: "Siddha Bhagwan", properties: ["8 Virtues", "Red Color", "Destroyer of All 8 Karmas", "Resides in Siddhashila", "Beyond Birth, Old Age, Death", "Eternal Seer", "Supreme Witness"], buttonClass: "bg-red-500 hover:bg-red-600 text-white border-red-700" },
+                    { name: "Acharya Bhagwan", properties: ["36 Virtues", "Yellow Color", "Radiant like the Sun", "Leader of Sangha", "Follower of Panchachar", "Protector of Jain Order", "Promoter of Dharma"], buttonClass: "bg-yellow-400 hover:bg-yellow-500 text-black border-yellow-600" },
+                    { name: "Upadhyay Bhagwan", properties: ["25 Virtues", "Green Color", "Like Trees of Knowledge", "Knower of Ang-Upang", "Reciter of Sutras", "Imparts Knowledge", "Beneficial to Self & Others"], buttonClass: "bg-green-500 hover:bg-green-600 text-white border-green-700" },
+                    { name: "Sadhu Bhagwan", properties: ["27 Virtues", "Black (Dark) Color", "Equanimity", "Endures 22 Hardships", "Performs Service (Vaiyavachch)", "Abstains from Violence, Lies, Stealing", "Protector of Six Kayas (Life forms)"], buttonClass: "bg-gray-700 hover:bg-gray-800 text-white border-gray-900" }
+                ]
+            }
+        };
+        let currentLanguage = 'gu'; // Default language
+        let parmeshthisData = translations[currentLanguage].parmeshthis; // Data for the current language
+        let instructionsVisible = true; // Instructions visibility state
+
+        // --- Game State Variables ---
+        let score = 0;
+        let remainingProperties = 0; // Will be set in initGame
+        let selectedCell = null; // DOM element of the currently selected grid cell
+        let currentGridProperties = []; // Array to hold data of properties currently in the grid
+
+        // --- DOM Element References ---
+        const gameTitle = document.getElementById('game-title');
+        const langGuButton = document.getElementById('lang-gu-btn');
+        const langEnButton = document.getElementById('lang-en-btn');
+        const toggleInstructionsButton = document.getElementById('toggle-instructions-btn');
+        const gameInstructionsDiv = document.getElementById('game-instructions');
+        const instructionsTitle = document.getElementById('instructions-title');
+        const instructionsList = document.getElementById('instructions-list');
+        const scoreLabel = document.getElementById('score-label');
+        const scoreDisplay = document.getElementById('score');
+        const remainingLabel = document.getElementById('remaining-label');
+        const remainingDisplay = document.getElementById('remaining');
+        const messageArea = document.getElementById('message-area');
+        const gameGrid = document.getElementById('game-grid');
+        const parmeshthiButtonsContainer = document.getElementById('parmeshthi-buttons');
+        const newGameButton = document.getElementById('new-game-btn');
+
+        // --- Helper Functions ---
+        // Shuffles an array in place
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Displays a message to the user
+        function showMessage(textKeyOrText, type = 'info', args = {}) {
+            const T = translations[currentLanguage];
+            let messageText = textKeyOrText;
+
+            // Handle dynamic messages that require arguments (like correct Parmeshthi name or final score)
+            if (textKeyOrText === T.incorrectMessageKey) {
+                messageText = (currentLanguage === 'gu' ? `ખોટું. આ ગુણધર્મ ${args.correctParmeshthiName} નો છે.` : `Incorrect. This property belongs to ${args.correctParmeshthiName}.`);
+            } else if (textKeyOrText === T.congratulationsMessageKey) {
+                messageText = (currentLanguage === 'gu' ? `અભિનંદન! તમે બધા ગુણધર્મો મેચ કર્યા છે! અંતિમ સ્કોર: ${args.score}` : `Congratulations! You've matched all properties! Final Score: ${args.score}`);
+            } else if (T[textKeyOrText]) { // If it's a key, get the translation
+                messageText = T[textKeyOrText];
+            }
+            // Else, it's assumed to be a direct string (though less common with this setup)
+
+            messageArea.textContent = messageText;
+            messageArea.classList.remove('text-green-600', 'text-red-600', 'text-blue-600'); // Clear previous colors
+            if (type === 'success') messageArea.classList.add('text-green-600');
+            else if (type === 'error') messageArea.classList.add('text-red-600');
+            else messageArea.classList.add('text-blue-600'); // Default info color
+
+            // Clear message after a delay
+            setTimeout(() => {
+                if (messageArea.textContent === messageText) { // Only clear if it's the same message
+                    messageArea.textContent = '\u00A0'; // Non-breaking space to maintain height
+                    messageArea.classList.remove('text-green-600', 'text-red-600', 'text-blue-600');
+                }
+            }, 3000);
+        }
+
+        // --- UI Update Function for Language Change ---
+        function updateUIText() {
+            const T = translations[currentLanguage];
+            parmeshthisData = T.parmeshthis; // Update parmeshthi data for the current language
+
+            document.documentElement.lang = T.htmlLang; // Set HTML lang attribute
+            document.body.style.fontFamily = T.fontFamily; // Set body font
+
+            // Update static text elements
+            gameTitle.textContent = T.title;
+            instructionsTitle.textContent = T.instructionsTitle;
+
+            // Update instructions list
+            instructionsList.innerHTML = ''; // Clear existing items
+            T.instructionsList.forEach(itemText => {
+                const li = document.createElement('li');
+                li.textContent = itemText;
+                instructionsList.appendChild(li);
+            });
+
+            scoreLabel.textContent = T.scoreLabel;
+            remainingLabel.textContent = T.remainingLabel;
+            newGameButton.textContent = T.newGameButton;
+
+            // Update instruction toggle button text and visibility
+            toggleInstructionsButton.textContent = instructionsVisible ? T.hideInstructions : T.showInstructions;
+            gameInstructionsDiv.style.display = instructionsVisible ? '' : 'none';
+
+            // Update active state of language buttons
+            langGuButton.classList.toggle('active', currentLanguage === 'gu');
+            langEnButton.classList.toggle('active', currentLanguage === 'en');
+
+            initGame(); // Re-initialize the game with the new language
+        }
+
+        // --- Game Logic ---
+        // Initializes or resets the game
+        function initGame() {
+            score = 0;
+            selectedCell = null;
+            currentGridProperties = [];
+            gameGrid.innerHTML = ''; // Clear previous grid
+            parmeshthiButtonsContainer.innerHTML = ''; // Clear previous buttons
+
+            // Ensure Parmeshthi buttons are enabled if they exist from a previous game
+            const pButtons = parmeshthiButtonsContainer.querySelectorAll('button');
+            if (pButtons.length > 0) { // Check if buttons exist before trying to iterate
+                 pButtons.forEach(btn => btn.disabled = false);
+            }
+
+
+            // Prepare all properties from the data
+            let allSelectableProperties = [];
+            parmeshthisData.forEach(parmeshthi => {
+                parmeshthi.properties.forEach(prop => {
+                    allSelectableProperties.push({ text: prop, parmeshthiName: parmeshthi.name });
+                });
+            });
+
+            shuffleArray(allSelectableProperties);
+            // Select 9 properties for the 3x3 grid
+            const gridPropertiesToDisplay = allSelectableProperties.slice(0, 9); // Changed from 20 to 9
+            remainingProperties = gridPropertiesToDisplay.length;
+
+            // Create grid cells
+            gridPropertiesToDisplay.forEach(propData => {
+                const cell = document.createElement('div');
+                cell.classList.add('grid-cell');
+                cell.textContent = propData.text;
+                cell.dataset.parmeshthiName = propData.parmeshthiName; // Store correct parmeshthi for this property
+                cell.addEventListener('click', handleCellClick);
+                gameGrid.appendChild(cell);
+                currentGridProperties.push({ ...propData, cellElement: cell, guessed: false });
+            });
+
+            // Create Parmeshthi buttons
+            parmeshthisData.forEach(parmeshthi => {
+                const button = document.createElement('button');
+                button.textContent = parmeshthi.name;
+                button.dataset.parmeshthiName = parmeshthi.name;
+                button.classList.add('parmeshthi-btn', 'border-2', 'rounded-lg', 'font-semibold', 'w-full');
+                // Apply specific styling classes from the data
+                parmeshthi.buttonClass.split(' ').forEach(cls => button.classList.add(cls));
+                button.addEventListener('click', handleParmeshthiButtonClick);
+                parmeshthiButtonsContainer.appendChild(button);
+            });
+
+            updateScoreboard();
+            showMessage(translations[currentLanguage].selectPropertyFirstMessage, "info");
+        }
+
+        // Handles a click on a grid cell (property)
+        function handleCellClick(event) {
+            const clickedCellElement = event.currentTarget;
+            // Ignore clicks on already correctly guessed cells
+            if (clickedCellElement.classList.contains('correct-guess')) return;
+
+            // Deselect previous cell if any
+            if (selectedCell) selectedCell.classList.remove('selected-cell');
+            // Select the new cell
+            selectedCell = clickedCellElement;
+            selectedCell.classList.add('selected-cell');
+            showMessage(translations[currentLanguage].selectParmeshthiMessage, "info");
+        }
+
+        // Handles a click on a Parmeshthi button
+        function handleParmeshthiButtonClick(event) {
+            if (!selectedCell) {
+                showMessage(translations[currentLanguage].pleaseSelectPropertyMessage, "error");
+                return;
+            }
+
+            const chosenParmeshthiName = event.currentTarget.dataset.parmeshthiName;
+            const correctParmeshthiName = selectedCell.dataset.parmeshthiName;
+            const propertyData = currentGridProperties.find(p => p.cellElement === selectedCell);
+
+
+            if (chosenParmeshthiName === correctParmeshthiName) {
+                score++;
+                remainingProperties--;
+                selectedCell.classList.remove('selected-cell');
+                selectedCell.classList.add('correct-guess', 'disabled-cell'); // Mark as correct and disable
+                selectedCell.removeEventListener('click', handleCellClick); // Prevent further clicks
+                if(propertyData) propertyData.guessed = true; // Mark as guessed in our tracking array
+
+                showMessage(translations[currentLanguage].correctMessage, "success");
+
+                if (remainingProperties === 0) {
+                    showMessage(translations[currentLanguage].congratulationsMessageKey, "success", { score: score });
+                    // Disable all Parmeshthi buttons once game is complete
+                    parmeshthiButtonsContainer.querySelectorAll('button').forEach(btn => btn.disabled = true);
+                }
+            } else {
+                // Flash red for incorrect guess
+                selectedCell.classList.add('incorrect-flash');
+                setTimeout(() => {
+                    // Check if selectedCell still exists and is part of the DOM
+                    if (selectedCell && selectedCell.parentElement) {
+                         selectedCell.classList.remove('incorrect-flash');
+                    }
+                }, 500);
+                showMessage(translations[currentLanguage].incorrectMessageKey, "error", { correctParmeshthiName: correctParmeshthiName });
+            }
+
+            // Deselect cell after guess attempt, only if it's still part of the DOM
+            if (selectedCell && selectedCell.parentElement) {
+                 selectedCell.classList.remove('selected-cell');
+            }
+            selectedCell = null; // Reset selected cell
+            updateScoreboard();
+        }
+
+        // Updates the score and remaining properties display
+        function updateScoreboard() {
+            scoreDisplay.textContent = score;
+            remainingDisplay.textContent = remainingProperties;
+        }
+
+        // --- Event Listeners for Controls ---
+        langGuButton.addEventListener('click', () => {
+            if (currentLanguage !== 'gu') {
+                currentLanguage = 'gu';
+                updateUIText();
+            }
+        });
+
+        langEnButton.addEventListener('click', () => {
+            if (currentLanguage !== 'en') {
+                currentLanguage = 'en';
+                updateUIText();
+            }
+        });
+
+        toggleInstructionsButton.addEventListener('click', () => {
+            instructionsVisible = !instructionsVisible;
+            const T = translations[currentLanguage];
+            gameInstructionsDiv.style.display = instructionsVisible ? '' : 'none';
+            toggleInstructionsButton.textContent = instructionsVisible ? T.hideInstructions : T.showInstructions;
+        });
+
+        newGameButton.addEventListener('click', initGame); // New game button
+
+        // --- Initial Game Start ---
+        // Ensures the DOM is fully loaded before initializing the game
+        document.addEventListener('DOMContentLoaded', () => {
+            langGuButton.classList.add('active'); // Set Gujarati as active by default
+            updateUIText(); // This will call initGame
+        });
+    </script>
+
+</body>
+</html>

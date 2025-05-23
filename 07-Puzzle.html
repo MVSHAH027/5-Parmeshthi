@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>પંચ પરમેષ્ઠિ પઝલ ગેમ</title>
+    <style>
+        body {
+            font-family: 'Noto Sans Gujarati', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 15px;
+            box-sizing: border-box;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .title-container {
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 1.7em; /* Adjusted size */
+        }
+        .main-title-text {
+             color: #2E7D32;
+        }
+        .subtitle-text {
+            font-size: 0.8em;
+            color: #34495e;
+            margin-top: 0px;
+            font-weight: normal;
+        }
+
+        .lang-buttons {
+            margin-bottom: 20px;
+        }
+        .lang-buttons button {
+            padding: 8px 15px;
+            margin: 0 5px;
+            border: 1px solid #4CAF50;
+            background-color: #f8f9fa;
+            color: #4CAF50;
+            cursor: pointer;
+            border-radius: 15px;
+            font-size: 0.9em;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .lang-buttons button.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .lang-buttons button:hover:not(.active) {
+            background-color: #e9f5e9;
+        }
+
+
+        .parmeshthi-reference {
+            background-color: #eafaf1;
+            border: 1px solid #b2dfdb;
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 0.9em;
+        }
+        .parmeshthi-reference h3 {
+            margin-top: 0;
+            color: #00695c;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .parmeshthi-reference ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .parmeshthi-reference li {
+            padding: 4px 0;
+            border-bottom: 1px dashed #a7d7c5;
+        }
+        .parmeshthi-reference li:last-child {
+            border-bottom: none;
+        }
+
+
+        h2 { /* For instruction title */
+            color: #1B5E20;
+            font-size: 1.3em;
+            margin-top: 0;
+        }
+        #gameInfo h3 { /* For "આ રમતના પરમેષ્ઠિ:" / "Selected Parmeshthi for this game:" */
+            color: #388E3C;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+
+        #instructions {
+            background-color: #e8f5e9;
+            border: 1px solid #a5d6a7;
+            padding: 15px;
+            margin-top: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        #instructions p, #instructions ul {
+            margin-bottom: 10px;
+        }
+        #instructions ul {
+            padding-left: 20px;
+        }
+        .example-win {
+            font-style: italic;
+            background-color: #dcedc8;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+
+        #gridContainer {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, minmax(80px, auto));
+            gap: 6px;
+            width: 90vw;
+            max-width: 320px;
+            margin: 25px auto;
+            border: 2px solid #BDBDBD;
+            padding: 6px;
+            box-sizing: border-box;
+            background-color: #e0e0e0;
+            border-radius: 8px;
+        }
+
+        .grid-cell {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #ccc;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s, transform 0.2s;
+            overflow: hidden;
+            text-align: center;
+            padding: 8px 5px;
+            box-sizing: border-box;
+            word-break: break-word;
+            min-height: 70px;
+            border-radius: 6px;
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .grid-cell.selected {
+            background-color: #B3E5FC !important;
+            border: 2px solid #0288D1;
+            transform: scale(1.05);
+        }
+
+        .grid-cell.name-item { background-color: #FFF9C4; color: #5D4037; }
+        .grid-cell.color-item { background-color: #C8E6C9; color: #1B5E20; }
+        .grid-cell.marks-item { background-color: #FFCCBC; color: #D84315; }
+
+        button#newGameBtn, button#toggleInstructionsBtn { /* Specific styling for game buttons */
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1em;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: background-color 0.3s, box-shadow 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        button#newGameBtn:hover, button#toggleInstructionsBtn:hover {
+            background-color: #388E3C;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        button#newGameBtn:active, button#toggleInstructionsBtn:active {
+            background-color: #2E7D32;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+
+        #gameInfo {
+            margin-bottom: 20px;
+            background-color: #f1f8e9;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #dcedc8;
+        }
+
+        #gameInfo p { /* For "Moves:" / "તમારી ચાલ:" */
+            margin: 8px 0;
+            font-weight: bold;
+            color: #33691E;
+        }
+        #gameInfo span#movesCount {
+            color: #F57C00;
+        }
+
+        #selectedParmeshthiList {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        #selectedParmeshthiList li {
+            padding: 8px 10px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            border-width: 1px;
+            border-style: solid;
+        }
+
+        .win-message-style {
+            margin-top: 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2E7D32;
+            background-color: #D1F2EB;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #4CAF50;
+        }
+
+        .winning-cell {
+            border: 3px solid gold !important;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 400px) {
+            .container { padding: 15px; }
+            h1 { font-size: 1.4em; } /* Adjusted size */
+            .subtitle-text { font-size: 0.7em; }
+            .grid-cell { font-size: 0.65rem; min-height: 65px; padding: 5px 3px; }
+            button#newGameBtn, button#toggleInstructionsBtn { font-size: 0.9em; padding: 10px 18px; }
+            .lang-buttons button { padding: 6px 12px; font-size: 0.8em;}
+            #gridContainer { max-width: 280px; gap: 4px; padding: 4px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title-container">
+            <h1 data-lang-key="gameTitleMain">પંચ પરમેષ્ઠિ પઝલ ગેમ</h1>
+            <div class="subtitle-text" data-lang-key="gameTitleSub">(Panch Parameshthi Puzzle Game)</div>
+        </div>
+
+        <div class="lang-buttons">
+            <button id="langBtnGu" data-lang="gu">ગુજરાતી</button>
+            <button id="langBtnEn" data-lang="en">English</button>
+        </div>
+
+        <div class="parmeshthi-reference">
+            <h3 data-lang-key="parmeshthiReferenceTitle">પંચ પરમેષ્ઠિ સંદર્ભ:</h3>
+            <ul id="parmeshthiReferenceList">
+                </ul>
+        </div>
+
+        <button id="toggleInstructionsBtn" data-lang-key="toggleInstructionsShow">રમતની સૂચનાઓ બતાવો</button>
+        <div id="instructions" style="display: none;">
+            <h2 data-lang-key="instructionsTitle">રમતની સૂચનાઓ:</h2>
+            <p><strong data-lang-key="objectiveTitle">૧. રમતનો ઉદ્દેશ (Game Objective):</strong> <span data-lang-key="objectiveText">3x3 ગ્રીડમાં, પસંદ કરેલા <strong>ત્રણેય (બધા)</strong> પંચ પરમેષ્ઠિના નામ, રંગ અને અંકને તેમના સંબંધિત સાચા ક્રમમાં અલગ-અલગ હરોળ (આડી) અથવા સ્તંભ (ઊભી) માં ગોઠવો.</span></p>
+            <p><strong data-lang-key="startGameTitle">૨. રમતની શરૂઆત (Starting the Game):</strong> <span data-lang-key="startGameText">દરેક નવી રમતમાં, ૫ માંથી કોઈપણ ત્રણ પંચ પરમેષ્ઠિ ભગવાનને રેન્ડમલી પસંદ કરવામાં આવશે. તેમના નામ, રંગ અને અંક (કુલ ૯ વસ્તુઓ) ગ્રીડમાં અવ્યવસ્થિત રીતે ગોઠવવામાં આવશે. કયા પરમેષ્ઠિ પસંદ થયા છે તે રમતની માહિતીમાં બતાવવામાં આવશે.</span></p>
+            <p><strong data-lang-key="howToPlayTitle">૩. કેવી રીતે રમવું (How to Play):</strong></p>
+            <ul data-lang-key="howToPlayList">
+                <li>ગ્રીડમાં કોઈપણ એક ખાના પર ક્લિક કરો.</li>
+                <li>પછી, તેની તરત બાજુના (ઉપર, નીચે, ડાબે, કે જમણે) બીજા ખાના પર ક્લિક કરો.</li>
+                <li>આમ કરવાથી બંને ખાનામાં રહેલી વિગતો અરસપરસ બદલાઈ જશે.</li>
+                <li>દરેક સફળ અદલા-બદલી તમારી "ચાલ" (move) તરીકે ગણાશે.</li>
+            </ul>
+            <p><strong data-lang-key="winningTitle">૪. જીત (Winning):</strong> <span data-lang-key="winningText">જ્યારે તમે પસંદ થયેલા <strong>ત્રણેય (બધા)</strong> પંચ પરમેષ્ઠિના [નામ] - [રંગ] - [અંક] ને સાચા ક્રમમાં (દરેક પરમેષ્ઠિ માટે એક અલગ લાઈન, આડી કે ઊભી) ગોઠવી દેશો, ત્યારે તમે જીતી જશો. આનો અર્થ એ છે કે ગ્રીડમાં ત્રણ લાઈનો (આડી કે ઊભી) ત્રણેય પસંદ થયેલ પરમેષ્ઠિ માટે યોગ્ય રીતે ગોઠવાયેલી હોવી જોઈએ.</span></p>
+            <p class="example-win" data-lang-key="exampleWin"><em>ઉદાહરણ: જો અરિહંત ભગવાન, સિદ્ધ ભગવાન અને આચાર્ય ભગવાન પસંદ થયા હોય, તો તમારે અરિહંત ભગવાન માટે `[નામ]-[રંગ]-[અંક]` એક લાઈનમાં, સિદ્ધ ભગવાન માટે `[નામ]-[રંગ]-[અંક]` બીજી લાઈનમાં, અને આચાર્ય ભગવાન માટે `[નામ]-[રંગ]-[અંક]` ત્રીજી લાઈનમાં ગોઠવવું પડશે. આ લાઈનો આડી કે ઊભી હોઈ શકે છે.</em></p>
+            <p><strong data-lang-key="playAgainTitle">૫. ફરીથી રમો (Play Again):</strong> <span data-lang-key="playAgainText">"નવી રમત" બટન પર ક્લિક કરીને તમે ગમે તેટલી વાર રમી શકો છો.</span></p>
+        </div>
+
+        <div id="gameInfo">
+            <h3 data-lang-key="selectedParmeshthiTitle">આ રમતના પરમેષ્ઠિ:</h3>
+            <ul id="selectedParmeshthiList"></ul>
+            <p><span data-lang-key="movesLabel">તમારી ચાલ</span>: <span id="movesCount">0</span></p>
+        </div>
+
+        <div id="gridContainer"></div>
+
+        <button id="newGameBtn" data-lang-key="newGameButton">નવી રમત</button>
+        <p id="winMessage" class="win-message-style" style="display:none;" data-lang-key="winMessage">અભિનંદન! તમે જીતી ગયા!</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Translations ---
+            const translations = {
+                gu: {
+                    gameTitleMain: "પંચ પરમેષ્ઠિ પઝલ ગેમ",
+                    gameTitleSub: "(Panch Parameshthi Puzzle Game)",
+                    parmeshthiReferenceTitle: "પંચ પરમેષ્ઠિ સંદર્ભ:",
+                    toggleInstructionsShow: "રમતની સૂચનાઓ બતાવો",
+                    toggleInstructionsHide: "રમતની સૂચનાઓ છુપાવો",
+                    instructionsTitle: "રમતની સૂચનાઓ:",
+                    objectiveTitle: "૧. રમતનો ઉદ્દેશ (Game Objective):",
+                    objectiveText: "3x3 ગ્રીડમાં, પસંદ કરેલા <strong>ત્રણેય (બધા)</strong> પંચ પરમેષ્ઠિના નામ, રંગ અને અંકને તેમના સંબંધિત સાચા ક્રમમાં અલગ-અલગ હરોળ (આડી) અથવા સ્તંભ (ઊભી) માં ગોઠવો.",
+                    startGameTitle: "૨. રમતની શરૂઆત (Starting the Game):",
+                    startGameText: "દરેક નવી રમતમાં, ૫ માંથી કોઈપણ ત્રણ પંચ પરમેષ્ઠિ ભગવાનને રેન્ડમલી પસંદ કરવામાં આવશે. તેમના નામ, રંગ અને અંક (કુલ ૯ વસ્તુઓ) ગ્રીડમાં અવ્યવસ્થિત રીતે ગોઠવવામાં આવશે. કયા પરમેષ્ઠિ પસંદ થયા છે તે રમતની માહિતીમાં બતાવવામાં આવશે.",
+                    howToPlayTitle: "૩. કેવી રીતે રમવું (How to Play):",
+                    howToPlayList: [
+                        "ગ્રીડમાં કોઈપણ એક ખાના પર ક્લિક કરો.",
+                        "પછી, તેની તરત બાજુના (ઉપર, નીચે, ડાબે, કે જમણે) બીજા ખાના પર ક્લિક કરો.",
+                        "આમ કરવાથી બંને ખાનામાં રહેલી વિગતો અરસપરસ બદલાઈ જશે.",
+                        "દરેક સફળ અદલા-બદલી તમારી \"ચાલ\" (move) તરીકે ગણાશે."
+                    ],
+                    winningTitle: "૪. જીત (Winning):",
+                    winningText: "જ્યારે તમે પસંદ થયેલા <strong>ત્રણેય (બધા)</strong> પંચ પરમેષ્ઠિના [નામ] - [રંગ] - [અંક] ને સાચા ક્રમમાં (દરેક પરમેષ્ઠિ માટે એક અલગ લાઈન, આડી કે ઊભી) ગોઠવી દેશો, ત્યારે તમે જીતી જશો. આનો અર્થ એ છે કે ગ્રીડમાં ત્રણ લાઈનો (આડી કે ઊભી) ત્રણેય પસંદ થયેલ પરમેષ્ઠિ માટે યોગ્ય રીતે ગોઠવાયેલી હોવી જોઈએ.",
+                    exampleWin: "<em>ઉદાહરણ: જો અરિહંત ભગવાન, સિદ્ધ ભગવાન અને આચાર્ય ભગવાન પસંદ થયા હોય, તો તમારે અરિહંત ભગવાન માટે `[નામ]-[રંગ]-[અંક]` એક લાઈનમાં, સિદ્ધ ભગવાન માટે `[નામ]-[રંગ]-[અંક]` બીજી લાઈનમાં, અને આચાર્ય ભગવાન માટે `[નામ]-[રંગ]-[અંક]` ત્રીજી લાઈનમાં ગોઠવવું પડશે. આ લાઈનો આડી કે ઊભી હોઈ શકે છે.</em>",
+                    playAgainTitle: "૫. ફરીથી રમો (Play Again):",
+                    playAgainText: "\"નવી રમત\" બટન પર ક્લિક કરીને તમે ગમે તેટલી વાર રમી શકો છો.",
+                    selectedParmeshthiTitle: "આ રમતના પરમેષ્ઠિ:",
+                    movesLabel: "તમારી ચાલ",
+                    newGameButton: "નવી રમત",
+                    winMessageBase: "અભિનંદન! તમે {moves} ચાલમાં જીતી ગયા!",
+                    parmeshthi: {
+                        arihant: { name: "અરિહંત ભગવાન", colorDisplay: "સફેદ (White)" },
+                        siddha: { name: "સિદ્ધ ભગવાન", colorDisplay: "લાલ (Red)" },
+                        acharya: { name: "આચાર્ય ભગવાન", colorDisplay: "પીળો (Yellow)" },
+                        upadhyay: { name: "ઉપાધ્યાય ભગવાન", colorDisplay: "લીલો (Green)" },
+                        sadhu: { name: "સાધુ ભગવાન", colorDisplay: "કાળો (Black)" }
+                    }
+                },
+                en: {
+                    gameTitleMain: "Panch Parameshthi Puzzle Game",
+                    gameTitleSub: "(પંચ પરમેષ્ઠિ પઝલ ગેમ)",
+                    parmeshthiReferenceTitle: "Panch Parameshthi Reference:",
+                    toggleInstructionsShow: "Show Instructions",
+                    toggleInstructionsHide: "Hide Instructions",
+                    instructionsTitle: "Game Instructions:",
+                    objectiveTitle: "1. Game Objective:",
+                    objectiveText: "In the 3x3 grid, arrange the name, color, and marks of all <strong>three (all)</strong> selected Panch Parmeshthi in their correct respective order in separate rows (horizontal) or columns (vertical).",
+                    startGameTitle: "2. Starting the Game:",
+                    startGameText: "In each new game, any three Panch Parmeshthi will be randomly selected out of five. Their names, colors, and marks (total 9 items) will be randomly arranged in the grid. The selected Parmeshthi will be shown in the game information.",
+                    howToPlayTitle: "3. How to Play:",
+                    howToPlayList: [
+                        "Click on any cell in the grid.",
+                        "Then, click on an adjacent cell (top, bottom, left, or right).",
+                        "This will swap the contents of the two cells.",
+                        "Each successful swap will count as one \"move\"."
+                    ],
+                    winningTitle: "4. Winning:",
+                    winningText: "You win when you arrange the [Name] - [Color] - [Marks] of all <strong>three (all)</strong> selected Panch Parmeshthi in the correct order (each Parmeshthi in a separate line, horizontal or vertical). This means three lines in the grid (horizontal or vertical) must be correctly arranged for the three selected Parmeshthi.",
+                    exampleWin: "<em>Example: If Arihant Bhagwan, Siddha Bhagwan, and Acharya Bhagwan are selected, you need to arrange `[Name]-[Color]-[Marks]` for Arihant Bhagwan in one line, for Siddha Bhagwan in another line, and for Acharya Bhagwan in a third line. These lines can be horizontal or vertical.</em>",
+                    playAgainTitle: "5. Play Again:",
+                    playAgainText: "You can play as many times as you like by clicking the \"New Game\" button.",
+                    selectedParmeshthiTitle: "Selected Parmeshthi for this game:",
+                    movesLabel: "Moves",
+                    newGameButton: "New Game",
+                    winMessageBase: "Congratulations! You won in {moves} moves!",
+                     parmeshthi: {
+                        arihant: { name: "Arihant Bhagwan", colorDisplay: "White" },
+                        siddha: { name: "Siddha Bhagwan", colorDisplay: "Red" },
+                        acharya: { name: "Acharya Bhagwan", colorDisplay: "Yellow" },
+                        upadhyay: { name: "Upadhyay Bhagwan", colorDisplay: "Green" },
+                        sadhu: { name: "Sadhu Bhagwan", colorDisplay: "Black" }
+                    }
+                }
+            };
+            let currentLanguage = 'gu';
+
+            // --- Core Parmeshthi Data (Language Agnostic) ---
+            const panchaParmeshthiData = [
+                { id: "arihant", marks: 12, colorHex: "#FFFFFF", textColor: "#000000", borderColor: "#CCCCCC" },
+                { id: "siddha", marks: 8, colorHex: "#FFCDD2", textColor: "#D32F2F", borderColor: "#E57373" },
+                { id: "acharya", marks: 36, colorHex: "#FFF9C4", textColor: "#FBC02D", borderColor: "#FFEE58" },
+                { id: "upadhyay", marks: 25, colorHex: "#C8E6C9", textColor: "#388E3C", borderColor: "#81C784" },
+                { id: "sadhu", marks: 27, colorHex: "#CFD8DC", textColor: "#263238", borderColor: "#78909C" }
+            ];
+
+            // --- DOM Elements ---
+            const gridContainer = document.getElementById('gridContainer');
+            const movesCountSpan = document.getElementById('movesCount');
+            const newGameBtn = document.getElementById('newGameBtn');
+            const toggleInstructionsBtn = document.getElementById('toggleInstructionsBtn');
+            const instructionsDiv = document.getElementById('instructions');
+            const winMessageP = document.getElementById('winMessage');
+            const selectedParmeshthiListUl = document.getElementById('selectedParmeshthiList');
+            const langBtnGu = document.getElementById('langBtnGu');
+            const langBtnEn = document.getElementById('langBtnEn');
+            const parmeshthiReferenceListUl = document.getElementById('parmeshthiReferenceList');
+            const htmlElement = document.documentElement;
+
+
+            // --- Game State Variables ---
+            let gridLogicalState = []; // Stores { parmeshthiId: '...', itemType: 'name'/'color'/'marks' }
+            let selectedGameParmeshthi = [];
+            let moves = 0;
+            let firstSelectedCell = null;
+            let gameWon = false;
+
+            // --- Language Functions ---
+            function applyTranslations() {
+                htmlElement.lang = currentLanguage;
+                document.title = translations[currentLanguage].gameTitleMain;
+
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[currentLanguage][key]) {
+                        if (key === 'howToPlayList') { // Special handling for lists
+                            el.innerHTML = ''; // Clear existing list items
+                            translations[currentLanguage][key].forEach(itemText => {
+                                const li = document.createElement('li');
+                                li.textContent = itemText;
+                                el.appendChild(li);
+                            });
+                        } else {
+                             // Use innerHTML for keys that might contain <strong> or <em>
+                            if (['objectiveText', 'winningText', 'exampleWin'].includes(key)) {
+                                el.innerHTML = translations[currentLanguage][key];
+                            } else {
+                                el.textContent = translations[currentLanguage][key];
+                            }
+                        }
+                    }
+                });
+                updateParmeshthiReferenceList();
+                updateDynamicContentForLanguageChange();
+                updateLanguageButtonActiveState();
+            }
+
+            function updateLanguageButtonActiveState() {
+                if (currentLanguage === 'gu') {
+                    langBtnGu.classList.add('active');
+                    langBtnEn.classList.remove('active');
+                } else {
+                    langBtnEn.classList.add('active');
+                    langBtnGu.classList.remove('active');
+                }
+            }
+            
+            function updateParmeshthiReferenceList() {
+                parmeshthiReferenceListUl.innerHTML = ''; // Clear existing
+                panchaParmeshthiData.forEach(pData => {
+                    const name = translations[currentLanguage].parmeshthi[pData.id].name;
+                    const color = translations[currentLanguage].parmeshthi[pData.id].colorDisplay;
+                    const marks = pData.marks;
+                    const li = document.createElement('li');
+                    li.textContent = `${name} : ${color} : ${marks}`;
+                    parmeshthiReferenceListUl.appendChild(li);
+                });
+            }
+
+
+            function setLanguage(lang) {
+                currentLanguage = lang;
+                applyTranslations();
+            }
+
+            langBtnGu.addEventListener('click', () => setLanguage('gu'));
+            langBtnEn.addEventListener('click', () => setLanguage('en'));
+
+            // --- Event Listeners & Game Logic ---
+            toggleInstructionsBtn.addEventListener('click', () => {
+                const isHidden = instructionsDiv.style.display === 'none';
+                instructionsDiv.style.display = isHidden ? 'block' : 'none';
+                toggleInstructionsBtn.dataset.langKey = isHidden ? 'toggleInstructionsHide' : 'toggleInstructionsShow';
+                toggleInstructionsBtn.textContent = translations[currentLanguage][toggleInstructionsBtn.dataset.langKey];
+            });
+
+            newGameBtn.addEventListener('click', startGame);
+
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+            }
+            
+            function getTranslatedItemValue(parmeshthiId, itemType, lang) {
+                const pData = panchaParmeshthiData.find(p => p.id === parmeshthiId);
+                if (!pData) return 'N/A';
+
+                if (itemType === 'name') return translations[lang].parmeshthi[parmeshthiId].name;
+                if (itemType === 'color') return translations[lang].parmeshthi[parmeshthiId].colorDisplay;
+                if (itemType === 'marks') return pData.marks.toString(); // Marks are numbers, convert to string for display
+                return 'Error';
+            }
+
+            function createCellLogicalObject(parmeshthiId, itemType) {
+                return { parmeshthiId: parmeshthiId, itemType: itemType };
+            }
+            
+            function updateDynamicContentForLanguageChange() {
+                // Update selected parmeshthi list
+                selectedParmeshthiListUl.innerHTML = '';
+                selectedGameParmeshthi.forEach(p => {
+                    const li = document.createElement('li');
+                    const pCoreData = panchaParmeshthiData.find(coreP => coreP.id === p.id);
+                    li.textContent = `${getTranslatedItemValue(p.id, 'name', currentLanguage)} → ${getTranslatedItemValue(p.id, 'color', currentLanguage)} → ${pCoreData.marks}`;
+                    li.style.backgroundColor = pCoreData.colorHex;
+                    li.style.color = pCoreData.textColor;
+                    li.style.borderColor = pCoreData.borderColor || pCoreData.textColor;
+                    selectedParmeshthiListUl.appendChild(li);
+                });
+
+                // Update grid cell display text
+                for (let r = 0; r < 3; r++) {
+                    for (let c = 0; c < 3; c++) {
+                        const cellElement = document.querySelector(`.grid-cell[data-r="${r}"][data-c="${c}"]`);
+                        if (cellElement && gridLogicalState[r] && gridLogicalState[r][c]) {
+                            const logicalCellData = gridLogicalState[r][c];
+                            updateCellElementDOM(cellElement, logicalCellData);
+                        }
+                    }
+                }
+                // Update win message if game was won
+                if (gameWon) {
+                     winMessageP.textContent = translations[currentLanguage].winMessageBase.replace('{moves}', moves);
+                }
+            }
+
+
+            function startGame() {
+                moves = 0;
+                movesCountSpan.textContent = moves;
+                firstSelectedCell = null;
+                gameWon = false;
+                winMessageP.style.display = 'none';
+                gridContainer.innerHTML = '';
+                selectedParmeshthiListUl.innerHTML = '';
+                document.querySelectorAll('.grid-cell.winning-cell').forEach(cell => cell.classList.remove('winning-cell'));
+
+                const shuffledAllData = [...panchaParmeshthiData];
+                shuffleArray(shuffledAllData);
+                selectedGameParmeshthi = shuffledAllData.slice(0, 3); // These are core data objects
+
+                // Display selected parmeshthi (will be handled by updateDynamicContentForLanguageChange called by applyTranslations)
+
+                let gridItemsLogical = [];
+                selectedGameParmeshthi.forEach(pCore => { // pCore is from panchaParmeshthiData
+                    gridItemsLogical.push(createCellLogicalObject(pCore.id, 'name'));
+                    gridItemsLogical.push(createCellLogicalObject(pCore.id, 'color'));
+                    gridItemsLogical.push(createCellLogicalObject(pCore.id, 'marks'));
+                });
+                shuffleArray(gridItemsLogical);
+
+                gridLogicalState = [];
+                let itemIndex = 0;
+                for (let r = 0; r < 3; r++) {
+                    const rowLogicalState = [];
+                    for (let c = 0; c < 3; c++) {
+                        const logicalData = gridItemsLogical[itemIndex++];
+                        rowLogicalState.push(logicalData);
+
+                        const cellElement = document.createElement('div');
+                        cellElement.classList.add('grid-cell');
+                        cellElement.dataset.r = r;
+                        cellElement.dataset.c = c;
+                        updateCellElementDOM(cellElement, logicalData); // Initial render with current language
+                        cellElement.addEventListener('click', handleCellClick);
+                        gridContainer.appendChild(cellElement);
+                    }
+                    gridLogicalState.push(rowLogicalState);
+                }
+                applyTranslations(); // This will also call updateDynamicContentForLanguageChange
+            }
+
+            function updateCellElementDOM(cellElement, logicalCellData) {
+                cellElement.textContent = getTranslatedItemValue(logicalCellData.parmeshthiId, logicalCellData.itemType, currentLanguage);
+                cellElement.classList.remove('name-item', 'color-item', 'marks-item');
+                if (logicalCellData.itemType === 'name') cellElement.classList.add('name-item');
+                else if (logicalCellData.itemType === 'color') cellElement.classList.add('color-item');
+                else if (logicalCellData.itemType === 'marks') cellElement.classList.add('marks-item');
+            }
+
+            function handleCellClick(event) {
+                if (gameWon) return;
+
+                const clickedElement = event.currentTarget;
+                const r = parseInt(clickedElement.dataset.r);
+                const c = parseInt(clickedElement.dataset.c);
+
+                if (!firstSelectedCell) {
+                    firstSelectedCell = { element: clickedElement, r, c };
+                    clickedElement.classList.add('selected');
+                } else {
+                    const r1 = firstSelectedCell.r;
+                    const c1 = firstSelectedCell.c;
+
+                    if (r === r1 && c === c1) {
+                         firstSelectedCell.element.classList.remove('selected');
+                         firstSelectedCell = null;
+                         return;
+                    }
+
+                    const isAdjacent = (Math.abs(r - r1) === 1 && c === c1) || (Math.abs(c - c1) === 1 && r === r1);
+
+                    if (isAdjacent) {
+                        [gridLogicalState[r][c], gridLogicalState[r1][c1]] = [gridLogicalState[r1][c1], gridLogicalState[r][c]];
+
+                        updateCellElementDOM(clickedElement, gridLogicalState[r][c]);
+                        updateCellElementDOM(firstSelectedCell.element, gridLogicalState[r1][c1]);
+                        
+                        moves++;
+                        movesCountSpan.textContent = moves;
+
+                        if (checkWin()) {
+                            gameWon = true;
+                            winMessageP.textContent = translations[currentLanguage].winMessageBase.replace('{moves}', moves);
+                            winMessageP.style.display = 'block';
+                        }
+                    }
+                    firstSelectedCell.element.classList.remove('selected');
+                    firstSelectedCell = null;
+                }
+            }
+            
+            function checkWin() {
+                let solvedParmeshthiCount = 0;
+                const cellsInSolvedLines = new Set(); 
+
+                for (const selectedP of selectedGameParmeshthi) { // selectedP is a core data object {id, marks, ...}
+                    const targetName = getTranslatedItemValue(selectedP.id, 'name', currentLanguage);
+                    const targetColor = getTranslatedItemValue(selectedP.id, 'color', currentLanguage);
+                    const targetMarks = selectedP.marks.toString(); // Compare with string from getTranslatedItemValue
+
+                    let isThisParmeshthiSolved = false;
+
+                    for (let r = 0; r < 3; r++) {
+                        // Check if all three items in the row belong to the current selectedP and are in correct order
+                        if (gridLogicalState[r][0].parmeshthiId === selectedP.id && gridLogicalState[r][0].itemType === 'name' &&
+                            gridLogicalState[r][1].parmeshthiId === selectedP.id && gridLogicalState[r][1].itemType === 'color' &&
+                            gridLogicalState[r][2].parmeshthiId === selectedP.id && gridLogicalState[r][2].itemType === 'marks') {
+                            
+                            // Now verify the displayed values (which getTranslatedItemValue would produce)
+                            // This check is implicitly handled because gridLogicalState stores the type and ID.
+                            // The visual check is what matters for the player. The logical check ensures correctness.
+                            cellsInSolvedLines.add(`${r},0`);
+                            cellsInSolvedLines.add(`${r},1`);
+                            cellsInSolvedLines.add(`${r},2`);
+                            isThisParmeshthiSolved = true;
+                            break; 
+                        }
+                    }
+
+                    if (isThisParmeshthiSolved) {
+                        solvedParmeshthiCount++;
+                        continue; 
+                    }
+
+                    for (let c = 0; c < 3; c++) {
+                         if (gridLogicalState[0][c].parmeshthiId === selectedP.id && gridLogicalState[0][c].itemType === 'name' &&
+                            gridLogicalState[1][c].parmeshthiId === selectedP.id && gridLogicalState[1][c].itemType === 'color' &&
+                            gridLogicalState[2][c].parmeshthiId === selectedP.id && gridLogicalState[2][c].itemType === 'marks') {
+
+                            cellsInSolvedLines.add(`0,${c}`);
+                            cellsInSolvedLines.add(`1,${c}`);
+                            cellsInSolvedLines.add(`2,${c}`);
+                            isThisParmeshthiSolved = true;
+                            break; 
+                        }
+                    }
+                    
+                    if (isThisParmeshthiSolved) {
+                        solvedParmeshthiCount++;
+                    }
+                }
+
+                document.querySelectorAll('.grid-cell').forEach(cellElement => {
+                    const r = cellElement.dataset.r;
+                    const c = cellElement.dataset.c;
+                    if (cellsInSolvedLines.has(`${r},${c}`)) {
+                        cellElement.classList.add('winning-cell');
+                    } else {
+                        cellElement.classList.remove('winning-cell');
+                    }
+                });
+                
+                return solvedParmeshthiCount === selectedGameParmeshthi.length && selectedGameParmeshthi.length > 0;
+            }
+
+            // Initial game start and language setup
+            startGame(); // This will call applyTranslations at the end
+        });
+    </script>
+</body>
+</html>

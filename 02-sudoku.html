@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang-key="gameTitle">Panch Parmeshthi Sudoku Game</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 10px;
+            padding-bottom: 20px;
+            background-color: #f0f0f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            min-height: 100vh;
+            margin: 0;
+        }
+        #mainPageTitle {
+            font-size: 1.8em; /* Adjusted font size */
+            color: #333;
+            margin-bottom: 10px; /* Spacing below title */
+            text-align: center;
+        }
+        .language-switcher {
+            margin-bottom: 10px;
+            display: flex;
+            gap: 10px;
+        }
+        .language-switcher button {
+            padding: 8px 12px;
+            font-size: 0.9em;
+            cursor: pointer;
+            border-radius: 6px;
+            border: 1px solid #555;
+            background-color: #007bff;
+            color: #fff;
+            font-weight: bold;
+        }
+        .language-switcher button:hover {
+            background-color: #0056b3;
+        }
+        .language-switcher button.active {
+            background-color: #0056b3;
+            box-shadow: 0 0 5px rgba(0,86,179,0.5);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(5, 42px);
+            grid-template-rows: repeat(5, 42px);
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+        .circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1.5px solid #555;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 17px;
+            font-weight: bold;
+            box-sizing: border-box;
+            color: #333;
+        }
+        .fixed {
+            cursor: default;
+            border: 2px solid #000;
+            background-color: #e0e0e0;
+        }
+        #timer {
+            margin-top: 15px;
+            font-size: 15px;
+            color: #333;
+            font-weight: bold;
+        }
+        .colors-container {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #777;
+            box-sizing: border-box;
+            transition: transform 0.2s ease;
+        }
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+        .color-option[style*="background-color: white"] {
+            border: 2px solid #bbb;
+        }
+
+        button {
+            margin: 5px;
+            padding: 7px 15px;
+            cursor: pointer;
+            font-size: 0.9em;
+            border-radius: 6px;
+            border: 1px solid #555;
+            background-color: #6c757d;
+            color: #fff;
+            font-weight: bold;
+            transition: background-color 0.2s ease;
+        }
+        button:hover {
+            background-color: #5a6268;
+        }
+        #startBtn {
+            background-color: #28a745;
+            border-color: #1e7e34;
+        }
+        #startBtn:hover {
+            background-color: #218838;
+        }
+        #deleteOneBtn {
+            background-color: #ffc107;
+            border-color: #d39e00;
+            color: #212529;
+        }
+        #deleteOneBtn:hover {
+            background-color: #e0a800;
+        }
+
+        .rules-legend-container {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .rules, .legend {
+            margin-top: 10px;
+            font-size: 13px;
+            padding: 0 10px;
+            text-align: left;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        .rules {
+            color: #00008B;
+            font-weight: bold;
+        }
+        .legend {
+             color: red;
+             font-weight: bold;
+             font-size: 15px;
+        }
+
+        .rules ul {
+            list-style-position: inside;
+            padding-left: 0;
+            margin-top: 3px;
+        }
+        .rules p strong, .legend p strong {
+            color: inherit;
+            font-weight: bold;
+            font-size: 1.1em;
+            display: block;
+            margin-bottom: 3px;
+            text-align: center;
+        }
+         .legend p {
+             margin-bottom: 3px;
+             text-align: center;
+        }
+
+
+        #congrats {
+            display: none;
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #28a745;
+            text-align: center;
+        }
+        .controls {
+            margin-top: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        #delete-all-button-container, #show-rules-button-container {
+            margin-top: 10px;
+            text-align: center;
+            width: 100%;
+        }
+        #deleteAllBtn {
+             background-color: #dc3545;
+             border-color: #c82333;
+        }
+        #deleteAllBtn:hover {
+            background-color: #c82333;
+        }
+        #showRulesBtn {
+            background-color: #17a2b8;
+            border-color: #117a8b;
+        }
+        #showRulesBtn:hover {
+            background-color: #138496;
+        }
+
+        .message-box-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .message-box {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 85%;
+        }
+        .message-box p {
+            margin-bottom: 20px;
+            font-size: 15px;
+            color: #333;
+        }
+        .message-box button {
+            padding: 10px 20px;
+            font-size: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .message-box button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<h1 id="mainPageTitle" data-lang-key="mainPageTitle">Sudoku : Panch Parmeshthi</h1>
+
+<div class="language-switcher">
+    <button id="langEnBtn" data-lang="en">English</button>
+    <button id="langGuBtn" data-lang="gu">ગુજરાતી</button>
+</div>
+
+<div class="rules-legend-container">
+    <div class="rules" id="rules">
+        <p><strong data-lang-key="rulesTitle">Game Rules:</strong></p>
+        <ul>
+            <li data-lang-key="rule1">Fill all 25 circles using 5 colors: White, Red, Yellow, Green, Black.</li>
+            <li data-lang-key="rule2">No color should repeat in the same row or column.</li>
+            <li data-lang-key="rule3">Click on a color and then click on a circle to apply it.</li>
+            <li data-lang-key="rule4">You can delete all user-placed colors or one color at a time.</li>
+            <li data-lang-key="rule5">The center cross (3 fixed colors) cannot be changed.</li>
+        </ul>
+    </div>
+    <div class="legend" id="legend">
+        <p><strong data-lang-key="symbolsTitle">Symbols:</strong></p>
+        <p data-lang-key="arihantSymbol">Arihant - White (×) | Siddha - Red</p>
+        <p data-lang-key="acharyaSymbol">Acharya - Yellow | Upadhyaya - Green | Sadhu - Black</p>
+    </div>
+</div>
+
+<div class="controls">
+    <button onclick="startGame()" id="startBtn" data-lang-key="startGame">Start Game</button>
+    <button onclick="activateDeleteMode()" id="deleteOneBtn" style="display: none;" data-lang-key="deleteOneColor">Delete One Color</button>
+</div>
+
+<div class="grid" id="grid"></div>
+<div id="timer" style="display: none;">Time: 0 seconds</div>
+<div id="colorsContainer" class="colors-container"></div>
+<div id="congrats" data-lang-key="congrats">🎉 Congratulations! You completed the puzzle! 🎉</div>
+
+<div id="delete-all-button-container">
+    <button onclick="deleteUserColors()" id="deleteAllBtn" style="display: none;" data-lang-key="deleteAllColors">Delete All User Colors</button>
+</div>
+<div id="show-rules-button-container" style="display: none;">
+    <button onclick="showRulesAndLegend()" id="showRulesBtn" data-lang-key="goToRules">Go to Game Rules</button>
+</div>
+
+<div class="message-box-overlay" id="messageBoxOverlay">
+    <div class="message-box">
+        <p id="messageBoxText"></p>
+        <button onclick="closeMessageBox()" data-lang-key="ok">OK</button>
+    </div>
+</div>
+
+<script>
+    const availableColors = ['white', 'red', 'yellow', 'green', 'black'];
+    const fixedPositions = [6, 12, 18]; // Center cross indices
+    const gridSize = 5;
+
+    const mainPageTitleElement = document.getElementById('mainPageTitle'); // Get the new title element
+    const gridElement = document.getElementById('grid');
+    const colorsContainerElement = document.getElementById('colorsContainer');
+    const timerDisplay = document.getElementById('timer');
+    const congratsMessageElement = document.getElementById('congrats');
+    const startButton = document.getElementById('startBtn');
+    const deleteAllButton = document.getElementById('deleteAllBtn');
+    const deleteOneButton = document.getElementById('deleteOneBtn');
+    const rulesDiv = document.getElementById('rules');
+    const legendDiv = document.getElementById('legend');
+    const showRulesButtonContainer = document.getElementById('show-rules-button-container');
+
+    const messageBoxOverlay = document.getElementById('messageBoxOverlay');
+    const messageBoxText = document.getElementById('messageBoxText');
+
+    const langEnBtn = document.getElementById('langEnBtn');
+    const langGuBtn = document.getElementById('langGuBtn');
+
+    let selectedColor = null;
+    let seconds = 0;
+    let timerInterval;
+    let deleteMode = false;
+    let gameInProgress = false;
+    let currentLang = 'en'; // Default language
+    let timerStarted = false; 
+
+    // --- Localization Data ---
+    const translations = {
+        en: {
+            mainPageTitle: "Sudoku : Panch Parmeshthi", // New title
+            gameTitle: "Panch Parmeshthi Sudoku Game", // Browser tab title
+            startGame: "Start Game",
+            restartGame: "Restart Game",
+            playAgain: "Play Again?",
+            deleteOneColor: "Delete One Color",
+            deleteAllColors: "Delete All User Colors",
+            goToRules: "Go to Game Rules",
+            rulesTitle: "Game Rules:",
+            rule1: "Fill all 25 circles using 5 colors: White, Red, Yellow, Green, Black.",
+            rule2: "No color should repeat in the same row or column.",
+            rule3: "Click on a color and then click on a circle to apply it.",
+            rule4: "You can delete all user-placed colors or one color at a time.",
+            rule5: "The center cross (3 fixed colors) cannot be changed.",
+            symbolsTitle: "Symbols:",
+            arihantSymbol: "Arihant - White (×) | Siddha - Red",
+            acharyaSymbol: "Acharya - Yellow | Upadhyaya - Green | Sadhu - Black",
+            congrats: "🎉 Congratulations! You completed the puzzle! 🎉",
+            timeLabel: "Time:",
+            secondsSuffix: "seconds",
+            invalidPlacement: "Invalid placement: Color repeated in row or column!",
+            deleteModeActive: "Delete mode activated. Click on a circle to remove its color.",
+            ok: "OK"
+        },
+        gu: {
+            mainPageTitle: "સુડોકુ : પંચ પરમેષ્ઠી", // New title - Placeholder, verify
+            gameTitle: "પંચ પરમેષ્ઠી સુડોકુ ગેમ", // Browser tab title
+            startGame: "રમત શરૂ કરો",
+            restartGame: "રમત ફરી શરૂ કરો",
+            playAgain: "ફરીથી રમો?",
+            deleteOneColor: "એક રંગ કાઢી નાખો",
+            deleteAllColors: "વપરાશકર્તાના બધા રંગો કાઢી નાખો",
+            goToRules: "રમતના નિયમો પર જાઓ",
+            rulesTitle: "રમતના નિયમો:",
+            rule1: "બધા 25 સર્કલ 5 રંગોનો ઉપયોગ કરીને ભરો: સફેદ, લાલ, પીળો, લીલો, કાળો.",
+            rule2: "કોઈપણ રંગ એક જ હાર અથવા કૉલમમાં પુનરાવર્તિત થવો જોઈએ નહીં.",
+            rule3: "એક રંગ પર ક્લિક કરો અને પછી તેને લાગુ કરવા માટે સર્કલ પર ક્લિક કરો.",
+            rule4: "તમે વપરાશકર્તા દ્વારા મુકેલા બધા રંગો અથવા એક સમયે એક રંગ કાઢી શકો છો.",
+            rule5: "કેન્દ્રનો ક્રોસ (3 નિશ્ચિત રંગો) બદલી શકાતો નથી.",
+            symbolsTitle: "પ્રતીકો:",
+            arihantSymbol: "અરિહંત - સફેદ (×) | સિદ્ધ - લાલ",
+            acharyaSymbol: "આચાર્ય - પીળો | ઉપાધ્યાય - લીલો | સાધુ - કાળો",
+            congrats: "🎉 અભિનંદન! તમે પઝલ પૂર્ણ કરી! 🎉",
+            timeLabel: "સમય:",
+            secondsSuffix: "સેકન્ડ",
+            invalidPlacement: "અમાન્ય પ્લેસમેન્ટ: હાર અથવા કૉલમમાં રંગ પુનરાવર્તિત થયો!",
+            deleteModeActive: "ડિલીટ મોડ સક્રિય થયો. રંગ દૂર કરવા માટે સર્કલ પર ક્લિક કરો.",
+            ok: "બરાબર"
+        }
+    };
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        document.documentElement.lang = lang; 
+
+        langEnBtn.classList.toggle('active', lang === 'en');
+        langGuBtn.classList.toggle('active', lang === 'gu');
+
+        document.querySelectorAll('[data-lang-key]').forEach(element => {
+            const key = element.getAttribute('data-lang-key');
+            if (translations[lang] && translations[lang][key]) {
+                element.textContent = translations[lang][key];
+            }
+        });
+        
+        // Update document title (browser tab) separately
+        if (translations[lang] && translations[lang]['gameTitle']) {
+            document.title = translations[lang]['gameTitle'];
+        }
+
+
+        updateTimerDisplay(); 
+        updateStartButtonText(); 
+        if (congratsMessageElement.style.display === 'block') {
+            congratsMessageElement.textContent = translations[currentLang].congrats;
+        }
+    }
+
+    function updateStartButtonText() {
+        if (!gameInProgress && congratsMessageElement.style.display === 'block') { 
+             startButton.textContent = translations[currentLang].playAgain;
+        } else if (gameInProgress || (!gameInProgress && seconds > 0 && timerStarted)) { 
+            startButton.textContent = translations[currentLang].restartGame;
+        } else { 
+            startButton.textContent = translations[currentLang].startGame;
+        }
+    }
+
+
+    function showMessage(messageKey) {
+        messageBoxText.textContent = translations[currentLang][messageKey] || messageKey; 
+        messageBoxOverlay.style.display = 'flex';
+    }
+
+    function closeMessageBox() {
+        messageBoxOverlay.style.display = 'none';
+    }
+
+    function showRulesAndLegend() {
+        mainPageTitleElement.style.display = 'none'; // Hide main title if rules are explicitly shown after game start
+        rulesDiv.style.display = 'block';
+        legendDiv.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function shuffleArray(array) {
+        const newArray = [...array];
+        for (let i = newArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        }
+        return newArray;
+    }
+
+    function generateRandomFixedColors() {
+        const shuffledAvailableColors = shuffleArray(availableColors);
+        let fixedCellColors = [];
+        const patternType = Math.floor(Math.random() * 3); 
+
+        if (patternType === 0) { 
+            fixedCellColors = [shuffledAvailableColors[0], shuffledAvailableColors[1], shuffledAvailableColors[2]];
+        } else if (patternType === 1) { 
+            const colorA = shuffledAvailableColors[0];
+            let colorB = shuffledAvailableColors[1];
+            if (colorA === colorB && shuffledAvailableColors.length > 1) {
+                 colorB = shuffledAvailableColors.length > 2 ? shuffledAvailableColors[2] : (availableColors.find(c => c !== colorA) || colorA);
+            } else if (colorA === colorB && shuffledAvailableColors.length <=1) {
+                colorB = colorA;
+            }
+            const pattern = shuffleArray([colorA, colorA, colorB]);
+            fixedCellColors = pattern;
+        } else { 
+            const colorA = shuffledAvailableColors[0];
+            fixedCellColors = [colorA, colorA, colorA];
+        }
+        return fixedCellColors;
+    }
+
+
+    function startGame() {
+        mainPageTitleElement.style.display = 'none'; // Hide the main page title
+        rulesDiv.style.display = 'none';
+        legendDiv.style.display = 'none';
+        congratsMessageElement.style.display = 'none';
+        deleteOneButton.style.display = 'inline-block';
+        deleteAllButton.style.display = 'none';
+        showRulesButtonContainer.style.display = 'block';
+        gameInProgress = true;
+        timerStarted = false; 
+
+        timerDisplay.style.display = 'block';
+        clearInterval(timerInterval); 
+        seconds = 0;
+        updateTimerDisplay(); 
+
+        gridElement.innerHTML = '';
+        colorsContainerElement.innerHTML = '';
+        selectedColor = null;
+        deleteMode = false;
+
+        const currentFixedColors = generateRandomFixedColors();
+
+        availableColors.forEach(color => {
+            const colorDiv = document.createElement('div');
+            colorDiv.classList.add('color-option');
+            colorDiv.style.backgroundColor = color;
+
+            colorDiv.addEventListener('click', () => {
+                if (!gameInProgress) return;
+                selectedColor = color;
+                deleteMode = false;
+                document.querySelectorAll('.color-option').forEach(opt => opt.style.boxShadow = 'none');
+                colorDiv.style.boxShadow = `0 0 8px 3px ${color === 'black' ? '#ccc' : color}`;
+            });
+            colorsContainerElement.appendChild(colorDiv);
+        });
+
+        for (let i = 0; i < gridSize * gridSize; i++) {
+            const circle = document.createElement('div');
+            circle.classList.add('circle');
+            circle.dataset.index = i;
+
+            if (fixedPositions.includes(i)) {
+                circle.classList.add('fixed');
+                const fixedColorIndexInPattern = fixedPositions.indexOf(i);
+                const colorToAssign = currentFixedColors[fixedColorIndexInPattern];
+
+                circle.style.backgroundColor = colorToAssign;
+                circle.dataset.color = colorToAssign;
+                if (colorToAssign === 'white') {
+                    circle.textContent = '×';
+                    circle.style.color = '#333';
+                }
+            }
+
+            circle.addEventListener('click', () => {
+                if (!gameInProgress || circle.classList.contains('fixed')) return;
+
+                if (deleteMode) {
+                    if (circle.dataset.color) {
+                        circle.style.backgroundColor = '';
+                        circle.textContent = '';
+                        delete circle.dataset.color;
+                        updateDeleteAllButtonVisibility();
+                    }
+                } else if (selectedColor) {
+                    const previousColor = circle.dataset.color || '';
+                    const previousText = circle.textContent || '';
+
+                    circle.style.backgroundColor = selectedColor;
+                    circle.dataset.color = selectedColor;
+                    if (selectedColor === 'white') {
+                        circle.textContent = '×';
+                        circle.style.color = '#333';
+                    } else {
+                        circle.textContent = '';
+                    }
+
+                    if (!isPlacementValid(parseInt(circle.dataset.index), selectedColor)) {
+                        showMessage('invalidPlacement');
+                        circle.style.backgroundColor = previousColor;
+                        circle.textContent = previousText;
+                        if (previousColor === 'white') {
+                             circle.style.color = '#333';
+                        }
+                        if (previousColor) {
+                            circle.dataset.color = previousColor;
+                        } else {
+                            delete circle.dataset.color;
+                        }
+                    } else {
+                        if (!timerStarted && gameInProgress) { 
+                            timerInterval = setInterval(() => {
+                                if (gameInProgress) {
+                                    seconds++;
+                                    updateTimerDisplay();
+                                }
+                            }, 1000);
+                            timerStarted = true;
+                        }
+                        updateDeleteAllButtonVisibility();
+                        checkCompletion();
+                    }
+                }
+            });
+            gridElement.appendChild(circle);
+        }
+        updateDeleteAllButtonVisibility();
+        setLanguage(currentLang); 
+    }
+
+    function updateTimerDisplay() {
+        timerDisplay.textContent = `${translations[currentLang].timeLabel} ${seconds} ${translations[currentLang].secondsSuffix}`;
+    }
+
+
+    function updateDeleteAllButtonVisibility() {
+        let hasUserColor = false;
+        const allCircles = document.querySelectorAll('.circle');
+        for (let circle of allCircles) {
+            if (!circle.classList.contains('fixed') && circle.dataset.color) {
+                hasUserColor = true;
+                break;
+            }
+        }
+        deleteAllButton.style.display = hasUserColor ? 'inline-block' : 'none';
+    }
+
+    function deleteUserColors() {
+        if (!gameInProgress) return;
+        for (let i = 0; i < gridSize * gridSize; i++) {
+            if (!fixedPositions.includes(i)) {
+                const circle = document.querySelector(`.circle[data-index="${i}"]`);
+                if (circle && circle.dataset.color) {
+                    circle.style.backgroundColor = '';
+                    circle.textContent = '';
+                    delete circle.dataset.color;
+                }
+            }
+        }
+        updateDeleteAllButtonVisibility();
+        selectedColor = null;
+        deleteMode = false;
+        document.querySelectorAll('.color-option').forEach(opt => opt.style.boxShadow = 'none');
+    }
+
+    function activateDeleteMode() {
+        if (!gameInProgress) return;
+        deleteMode = true;
+        selectedColor = null;
+        document.querySelectorAll('.color-option').forEach(opt => opt.style.boxShadow = 'none');
+        showMessage("deleteModeActive");
+    }
+
+    function isPlacementValid(index, color) {
+        const row = Math.floor(index / gridSize);
+        const col = index % gridSize;
+
+        for (let i = 0; i < gridSize; i++) {
+            const cellIndexInRow = row * gridSize + i;
+            if (cellIndexInRow !== index) {
+                const circleInRow = document.querySelector(`.circle[data-index="${cellIndexInRow}"]`);
+                if (circleInRow && circleInRow.dataset.color === color) {
+                    return false;
+                }
+            }
+        }
+
+        for (let i = 0; i < gridSize; i++) {
+            const cellIndexInCol = i * gridSize + col;
+            if (cellIndexInCol !== index) {
+                const circleInCol = document.querySelector(`.circle[data-index="${cellIndexInCol}"]`);
+                if (circleInCol && circleInCol.dataset.color === color) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    function checkCompletion() {
+        const allCircles = document.querySelectorAll('.circle');
+        let allFilled = true;
+        for (let circle of allCircles) {
+            if (!circle.dataset.color) {
+                allFilled = false;
+                break;
+            }
+            if (!isPlacementValid(parseInt(circle.dataset.index), circle.dataset.color)) {
+                return;
+            }
+        }
+
+        if (allFilled) {
+            clearInterval(timerInterval); 
+            congratsMessageElement.style.display = 'block';
+            congratsMessageElement.textContent = translations[currentLang].congrats;
+            gameInProgress = false;
+            deleteOneButton.style.display = 'none';
+            deleteAllButton.style.display = 'none';
+            showRulesButtonContainer.style.display = 'none';
+            updateStartButtonText();
+            document.querySelectorAll('.color-option').forEach(opt => opt.style.boxShadow = 'none');
+        }
+    }
+
+    langEnBtn.addEventListener('click', () => setLanguage('en'));
+    langGuBtn.addEventListener('click', () => setLanguage('gu'));
+
+    window.onload = () => {
+        mainPageTitleElement.style.display = 'block'; // Show main title on load
+        rulesDiv.style.display = 'block';
+        legendDiv.style.display = 'block';
+        timerDisplay.style.display = 'none'; 
+        updateTimerDisplay(); 
+        deleteOneButton.style.display = 'none';
+        deleteAllButton.style.display = 'none';
+        showRulesButtonContainer.style.display = 'none';
+        congratsMessageElement.style.display = 'none';
+        setLanguage(currentLang); 
+    };
+</script>
+
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>પંચ પરમેષ્ઠિ - મુખ્ય પૃષ્ઠ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans Gujarati', sans-serif;
+            background-color: #fdfae6; /* Light cream background */
+            color: #4a3b31; /* Dark brown text */
+        }
+        .lang-btn {
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .lang-btn-active {
+            background-color: #c2780c; /* Darker orange for active */
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15), inset 0 1px 2px rgba(0,0,0,0.1);
+            transform: translateY(-1px);
+        }
+        .lang-btn-inactive {
+            background-color: #f59e0b; /* Amber-500 */
+            color: #4a3b31; /* Dark brown text */
+        }
+        .lang-btn-inactive:hover {
+            background-color: #d97706; /* Amber-600 */
+        }
+        .card-link {
+            background-color: #fffefa; /* Very light cream for cards */
+            border: 1px solid #f3e9c4; /* Light gold border */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-link:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-title {
+            color: #8c5a1a; /* Muted gold/brown for titles */
+        }
+        .card-description {
+            color: #5f4c42; /* Slightly lighter brown for descriptions */
+        }
+        .header-gradient {
+            background-image: linear-gradient(to right, #fde68a, #fcd34d, #fbbf24); /* Amber gradient */
+        }
+        .footer-gradient {
+            background-image: linear-gradient(to right, #fbbf24, #fcd34d, #fde68a); /* Amber gradient reversed */
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <header class="header-gradient py-6 shadow-md">
+        <div class="container mx-auto px-4 text-center">
+            <h1 id="main-title" class="text-4xl sm:text-5xl font-bold text-amber-900">પંચ પરમેષ્ઠિ જ્ઞાન સાગર</h1>
+            <p id="main-subtitle" class="text-lg text-amber-800 mt-2">આપનું સ્વાગત છે!</p>
+        </div>
+    </header>
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8 flex-grow">
+        <div class="text-center my-6 sm:my-8 space-x-2 sm:space-x-4">
+            <button id="btn-gu" class="lang-btn px-5 py-2 sm:px-7 sm:py-3 text-sm sm:text-base rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-75">ગુજરાતી</button>
+            <button id="btn-en" class="lang-btn px-5 py-2 sm:px-7 sm:py-3 text-sm sm:text-base rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">English</button>
+        </div>
+
+        <div id="links-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            </div>
+    </div>
+
+    <footer class="footer-gradient py-4 mt-auto">
+        <p id="footer-text" class="text-center text-amber-800 text-sm">મનીષ વી. શાહ: વોટ્સએપ: 94299 26447: (વડોદરા)</p>
+    </footer>
+
+    <script>
+        // --- Translations and Page Data ---
+        const pageLinks = [
+            {
+                fileName: "youtube_lessons_students",
+                title_gu: "વિદ્યાર્થી મિત્રો માટે પંચ પરમેષ્ઠિના બોધપાઠ",
+                description_gu: "જીવનમાં સફળતા માટે માર્ગદર્શન અને પંચ પરમેષ્ઠિના બોધપાઠ આપતો વિડિઓ.",
+                title_en: "Panch Parmeshthi Lessons for Students",
+                description_en: "A video offering guidance for success in life and lessons from Panch Parmeshthi.",
+                link: "https://youtu.be/67qPlgNPHdE" // User provided link
+            },
+            {
+                fileName: "youtube_podcast_glory",
+                title_gu: "પોડકાસ્ટ: પંચ પરમેષ્ઠિ ગુણ અને મહિમા",
+                description_gu: "પંચ પરમેષ્ઠિના ગુણ અને તેમના મહત્વ વિશે ઊંડાણપૂર્વક ચર્ચા કરતો પોડકાસ્ટ.",
+                title_en: "Podcast: Panch Parmeshthi Qualities & Glory",
+                description_en: "An in-depth podcast discussing the virtues and significance of Panch Parmeshthi.",
+                link: "https://youtu.be/enxAvvJl7S0" // User provided link
+            },
+            {
+                fileName: "youtube_vandana_song",
+                title_gu: "પંચ પરમેષ્ઠિ વંદના (એક સુંદર ગીત)",
+                description_gu: "એક મધુર ભક્તિ ગીત દ્વારા પંચ પરમેષ્ઠિને વંદન.",
+                title_en: "Panch Parmeshthi Vandana (A Beautiful Song)",
+                description_en: "Salutations to Panch Parmeshthi through a melodious devotional song.",
+                link: "https://youtu.be/byyx0b3J_g8" // User provided link
+            },
+            {
+                fileName: "11-theory.html",
+                title_gu: "પંચ પરમેષ્ઠિ: સિદ્ધાંત",
+                description_gu: "પંચ પરમેષ્ઠિ ભગવાનના ગુણધર્મો અને મહત્વનું વિગતવાર વર્ણન.",
+                title_en: "Panch Parmeshthi: Theory",
+                description_en: "Detailed explanation of the qualities and significance of Panch Parmeshthi.",
+                link: "11-theory.html" // Link from original user file
+            },
+            {
+                fileName: "01-property.html",
+                title_gu: "રમત: ગુણધર્મ ઓળખો",
+                description_gu: "પંચ પરમેષ્ઠિના ગુણધર્મોને તેમના સંબંધિત ભગવાન સાથે મેચ કરવાની રમત.",
+                title_en: "Game: Identify Properties",
+                description_en: "A game to match the properties of Panch Parmeshthi with their respective Lords.",
+                link: "01-property.html" // Link from original user file
+            },
+            {
+                fileName: "02-sudoku.html",
+                title_gu: "રમત: સુડોકુ",
+                description_gu: "પંચ પરમેષ્ઠિના પ્રતીકો અને રંગો સાથે એક મનોરંજક સુડોકુ પઝલ.",
+                title_en: "Game: Sudoku",
+                description_en: "An entertaining Sudoku puzzle featuring Panch Parmeshthi symbols and colors.",
+                link: "02-sudoku.html" // Link from original user file
+            },
+            {
+                fileName: "03-memory.html",
+                title_gu: "રમત: સ્મૃતિ રમત",
+                description_gu: "પંચ પરમેષ્ઠિના નામોની જોડી શોધીને તમારી યાદશક્તિને ચકાસો.",
+                title_en: "Game: Memory Game",
+                description_en: "Test your memory by finding pairs of Panch Parmeshthi names.",
+                link: "03-memory.html" // Link from original user file
+            },
+            {
+                fileName: "04-8-cards.html",
+                title_gu: "રમત: આઠ કાર્ડ અદલાબદલી",
+                description_gu: "કાર્ડને યોગ્ય ક્રમમાં ગોઠવવા માટે તેમને અદલાબદલ કરવાની પઝલ ગેમ.",
+                title_en: "Game: Eight Cards Swapping",
+                description_en: "A puzzle game involving swapping cards to arrange them in the correct order.",
+                link: "04-8-cards.html" // Link from original user file
+            },
+            {
+                fileName: "05-math.html",
+                title_gu: "રમત: ગણિત ક્વિઝ",
+                description_gu: "પંચ પરમેષ્ઠિના પવિત્ર અંકો પર આધારિત ગાણિતિક ક્વિઝ.",
+                title_en: "Game: Math Quiz",
+                description_en: "A mathematical quiz based on the sacred numbers of Panch Parmeshthi.",
+                link: "05-math.html" // Link from original user file
+            },
+            {
+                fileName: "06-swap.html",
+                title_gu: "રમત: સ્થાન બદલો",
+                description_gu: "પંચ પરમેષ્ઠિના પદોને તેમના યોગ્ય ક્રમમાં ગોઠવવાની રમત.",
+                title_en: "Game: Swap Positions",
+                description_en: "A game to arrange the Panch Parmeshthi terms in their correct order by swapping.",
+                link: "06-swap.html" // Link from original user file
+            },
+            {
+                fileName: "07-Puzzle.html",
+                title_gu: "રમત: પઝલ ગેમ",
+                description_gu: "પંચ પરમેષ્ઠિના નામ, રંગ અને અંકને ગ્રીડમાં ગોઠવવાની એક મગજ કસરત.",
+                title_en: "Game: Puzzle Game",
+                description_en: "A brain-teasing puzzle to arrange Panch Parmeshthi names, colors, and marks in a grid.",
+                link: "07-Puzzle.html" // Link from original user file
+            }
+        ];
+
+        const translations = {
+            'main-title': {
+                gu: 'પંચ પરમેષ્ઠિ જ્ઞાન સાગર',
+                en: 'Panch Parmeshthi Knowledge Hub'
+            },
+            'main-subtitle': {
+                gu: 'આપનું સ્વાગત છે!',
+                en: 'Welcome!'
+            },
+            'footer-text': {
+                gu: 'મનીષ વી. શાહ: વોટ્સએપ: 94299 26447: (વડોદરા)',
+                en: 'Manish V. Shah: WhatsApp: 94299 26447: (Vadodara)'
+            },
+            'page-title': {
+                gu: 'પંચ પરમેષ્ઠિ - મુખ્ય પૃષ્ઠ',
+                en: 'Panch Parmeshthi - Main Page'
+            }
+        };
+
+        // --- DOM Elements ---
+        const btnGu = document.getElementById('btn-gu');
+        const btnEn = document.getElementById('btn-en');
+        const htmlTag = document.documentElement;
+        const linksContainer = document.getElementById('links-container');
+
+        // --- Functions ---
+
+        // Function to create and append link cards
+        function renderLinks(lang) {
+            linksContainer.innerHTML = ''; // Clear existing links
+            pageLinks.forEach(page => {
+                const card = document.createElement('a');
+                card.href = page.link;
+                // For external links (like YouTube), open in a new tab
+                if (page.link.startsWith('http')) {
+                    card.target = '_blank';
+                    card.rel = 'noopener noreferrer';
+                }
+                card.className = 'card-link block p-6 rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-opacity-75';
+                
+                const title = document.createElement('h3');
+                title.className = 'card-title text-xl sm:text-2xl font-semibold mb-2';
+                title.textContent = page[`title_${lang}`];
+                
+                const description = document.createElement('p');
+                description.className = 'card-description text-sm sm:text-base';
+                description.textContent = page[`description_${lang}`];
+                
+                card.appendChild(title);
+                card.appendChild(description);
+                linksContainer.appendChild(card);
+            });
+        }
+
+        // Function to set the language
+        function setLanguage(lang) {
+            // Update general text elements
+            for (const id in translations) {
+                const element = document.getElementById(id);
+                if (element) {
+                    // Use innerHTML for elements that might contain simple HTML like the footer
+                    // For others, textContent is safer, but innerHTML is used here for consistency with original
+                    element.innerHTML = translations[id][lang]; 
+                }
+            }
+            // Update page title
+            document.title = translations['page-title'][lang];
+
+            // Update html lang attribute
+            htmlTag.lang = lang;
+
+            // Update button styles and body font
+            if (lang === 'gu') {
+                btnGu.classList.remove('lang-btn-inactive');
+                btnGu.classList.add('lang-btn-active');
+                btnEn.classList.remove('lang-btn-active');
+                btnEn.classList.add('lang-btn-inactive');
+                document.body.style.fontFamily = "'Noto Sans Gujarati', 'Inter', sans-serif";
+            } else {
+                btnEn.classList.remove('lang-btn-inactive');
+                btnEn.classList.add('lang-btn-active');
+                btnGu.classList.remove('lang-btn-active');
+                btnGu.classList.add('lang-btn-inactive');
+                document.body.style.fontFamily = "'Inter', 'Noto Sans Gujarati', sans-serif";
+            }
+
+            // Re-render links with the selected language
+            renderLinks(lang);
+
+            // Store preference in localStorage
+            try {
+                localStorage.setItem('preferredLanguage_mainIndex', lang);
+                // console.log(`Main index language changed to ${lang}. Preference saved.`);
+            } catch (e) {
+                console.error("Could not save language preference to localStorage:", e);
+                // Optionally, inform the user that preferences won't be saved if localStorage is unavailable/full
+            }
+        }
+
+        // --- Event Listeners ---
+        btnGu.addEventListener('click', () => setLanguage('gu'));
+        btnEn.addEventListener('click', () => setLanguage('en'));
+
+        // --- Initial Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            let preferredLanguage = 'gu'; // Default to Gujarati
+            try {
+                const storedLang = localStorage.getItem('preferredLanguage_mainIndex');
+                if (storedLang) {
+                    preferredLanguage = storedLang;
+                    // console.log(`Loaded preferred language for main index: ${preferredLanguage}`);
+                } else {
+                    // console.log('No preferred language found for main index, defaulting to Gujarati.');
+                }
+            } catch (e) {
+                console.error("Could not retrieve language preference from localStorage:", e);
+                // Proceed with default if localStorage is unavailable
+            }
+            setLanguage(preferredLanguage);
+            // console.log('મુખ્ય અનુક્રમણિકા પૃષ્ઠ સંપૂર્ણપણે લોડ થઈ ગયું છે.');
+        });
+    </script>
+</body>
+</html>
